@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GoStop.Card
 {
-    abstract class Kwang : Hanafuda
+    public class Kwang : Hanafuda
     {
-        protected Kwang(Month _month) : base(_month, CardType.Kwang)
+        public Kwang(Month _month) : base(_month, CardType.Kwang)
         { }
     }
 }

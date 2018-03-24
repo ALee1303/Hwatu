@@ -3,6 +3,7 @@
 namespace GoStop
 {
     enum CardState { Hidden, OnBoard, Taken}
+
     public class DeckManager
     {
         CardState[,] deckStatus;

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GoStop.Card
 {
-    abstract class ChungDan : Tti
+    public class ChungDan : Tti
     {
-        protected ChungDan(Month _month) : base(_month, TtiType.Chung)
+        public ChungDan(Month _month) : base(_month, TtiType.Chung)
         { }
     }
 }
