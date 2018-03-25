@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoStop.Card
 {
-    class SsangPi : Pi
+    public class SsangPi : Pi
     {
         public SsangPi(Month _month) : base(_month, PiType.SsangPi)
         { }
