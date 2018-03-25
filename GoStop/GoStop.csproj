@@ -45,6 +45,7 @@
     <Compile Include="Card\ChoDan.cs" />
     <Compile Include="Card\ChungDan.cs" />
     <Compile Include="Card\SsangPi.cs" />
+    <Compile Include="Card\Yul.cs" />
     <Compile Include="DeckManager.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Card\abstract\Hanafuda.cs" />

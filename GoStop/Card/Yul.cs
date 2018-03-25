@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace GoStop.Card
 {
-    class Yul
+    public class Yul : Hanafuda
     {
+        public Yul(Month _month) : base(_month, CardType.Yul)
+        { }
     }
 }
