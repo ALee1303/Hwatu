@@ -32,5 +32,15 @@ namespace UnitTestGoStop
             toCompare = new HongDan(Month.April);
             Assert.AreEqual(true, hanafuda == toCompare);
         }
+
+        [TestMethod]
+        public void PiEquals()
+        {
+            hanafuda = new Pi(Month.April);
+            Hanafuda toCompare = new SsangPi(Month.April);
+            Assert.AreEqual(false, hanafuda == toCompare);
+            toCompare = new Pi(Month.April);
+            Assert.AreEqual(true, hanafuda == toCompare);
+        }
     }
 }
