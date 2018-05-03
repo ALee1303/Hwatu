@@ -3,7 +3,7 @@
 namespace GoStop.Card
 {
     public enum CardType { Pi, Tti, Yul, Kwang }
-    public enum Month { January, February, March, April, June, July, August, September, October, November, December }
+    public enum Month { January, February, March, April, May, June, July, August, September, October, November, December }
 
     public abstract class Hanafuda : IEquatable<Hanafuda>
     {

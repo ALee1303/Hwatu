@@ -1,13 +1,15 @@
 ﻿using GoStop.Card;
+using GoStop.Collection;
 using System;
 using System.Collections.Generic;
 
 namespace GoStop
 {
-    class Player
+    public class Player
     {
-        List<Hanafuda> hand, collected;
-        int point, junk;
+        private Board board;
+        private CardCollection hand, collected;
+        private List<MinhwatuCollection> specials;
 
     }
 }

@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C34DB0CB-47ED-40A8-BBC2-67AA748F43A3}</ProjectGuid>
+    <ProjectGuid>{38C8AFA6-D05E-471B-8D6A-6FBB030D2EAC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitTestGoStop</RootNamespace>
@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeckTest.cs" />
     <Compile Include="EqualTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

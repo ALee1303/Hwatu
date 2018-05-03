@@ -10,22 +10,20 @@ namespace GoStop.Card
 
     public class Pi : Hanafuda
     {
-        PiType point;
-
-        public int Point { get => (int)point; }
+        PiType piType;
 
         public Pi(Month _month) : this(_month, PiType.pi)
         { }
 
-        protected Pi(Month _month, PiType _point) : base(_month, CardType.Pi)
+        protected Pi(Month _month, PiType _piType) : base(_month, CardType.Pi)
         {
-            point = _point;
+            piType = _piType;
         }
 
         protected override bool isEqual(Hanafuda other)
         {
             if (base.isEqual(other) 
-                && this.Point == ((Pi)other).Point)
+                && this.piType == ((Pi)other).piType)
                 return true;
             return false;
         }

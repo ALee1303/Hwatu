@@ -41,10 +41,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Drawable2DSprite.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameScreen.cs" />
+    <Compile Include="Sprite2D.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenManager2D.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

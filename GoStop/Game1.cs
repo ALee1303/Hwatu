@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using GoStop.Screen;
+
 namespace GoStop
 {
     /// <summary>
@@ -15,6 +17,8 @@ namespace GoStop
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
             Content.RootDirectory = "Content";
         }
 
@@ -26,8 +30,6 @@ namespace GoStop
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -38,9 +40,7 @@ namespace GoStop
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
