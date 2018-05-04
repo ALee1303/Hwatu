@@ -23,43 +23,42 @@ namespace GoStop
                 collection.OnCardWon(won);
         }
         #endregion
-        
-        protected virtual void SubscribeSpecialEmptyEvent()
-        {
-            foreach (SpecialCards collection in specials)
-                collection.CollectionEmpty += _board.player_SpecialEmpty;
-        }
 
         public virtual void PlayCard()
         {
-
+            if (!hand)
+                OnHandEmpty(null);
         }
 
         public event EventHandler<CardPlayedEventArgs> CardPlayed;
-        public event EventHandler<HandEmptyEventArgs> HandEmpty;
+        public event EventHandler<EventArgs> HandEmpty;
 
         protected virtual void OnCardPlayed(CardPlayedEventArgs args)
         {
-            if (CardPlayed != null && args != null && args.Player == this)
-                CardPlayed(this, args);
+            if (args.Card != null)
+                CardPlayed?.Invoke(this, args);
         }
 
-        protected virtual void OnHandEmpty(HandEmptyEventArgs args)
+        protected virtual void OnHandEmpty(EventArgs args)
         {
-            if (HandEmpty != null && args != null && args.Player == this)
-                HandEmpty(this, args);
+            HandEmpty?.Invoke(this, args);
         }
 
+        public virtual void SubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler)
+        {
+            foreach (SpecialCards collection in specials)
+                collection.CollectionEmpty += handler;
+        }
+
+        public virtual void UnsubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler)
+        {
+            foreach (SpecialCards collection in specials)
+                collection.CollectionEmpty -= handler;
+        }
     }
 
     public class CardPlayedEventArgs : EventArgs
     {
-        public Player Player { get; set; }
         public Hanafuda Card { get; set; }
-    }
-
-    public class HandEmptyEventArgs : EventArgs
-    {
-        public Player Player { get; set; }
     }
 }

@@ -8,13 +8,11 @@ namespace GoStop
 {
     public class MinhwatuBoard : Board
     {
-        private int finishedPlayers;
         private Dictionary<Type, Player> minhwatuPoints;
 
         public MinhwatuBoard() : base()
         {
-            finishedPlayers = 0;
-            minhwatuPoints = new Dictionary<Type, Player>(7);
+            minhwatuPoints = new Dictionary<Type, Player>(6);
             minhwatuPoints.Add(typeof(ChoYak), null);
             minhwatuPoints.Add(typeof(PoongYak), null);
             minhwatuPoints.Add(typeof(BiYak), null);
@@ -23,12 +21,17 @@ namespace GoStop
             minhwatuPoints.Add(typeof(HongDanCollection), null);
         }
 
-        public override void player_CardPlayed(object sender, CardPlayedEventArgs args)
+        protected override void player_CardPlayed(object sender, CardPlayedEventArgs args)
         {
             base.player_CardPlayed(sender, args);
         }
 
-        public override void player_SpecialEmpty(object sender, EventArgs arg)
+        protected override void player_HandEmpty(object sender, EventArgs args)
+        {
+            base.player_HandEmpty(sender, args);
+        }
+
+        protected override void collection_SpecialEmpty(object sender, EventArgs arg)
         {
             Type type = typeof(SpecialCards);
             SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)arg;
@@ -36,12 +39,7 @@ namespace GoStop
                 return;
             Player player = specialArg.Owner;
             scoreBoard[player] = specialArg.Points;
-            minhwatuPoints[type] = specialArg.Owner;
-        }
-
-        public override void player_HandEmpty(object sender, HandEmptyEventArgs args)
-        {
-            base.player_HandEmpty(sender, args);
+            minhwatuPoints[sender.GetType()] = specialArg.Owner;
         }
     }
 }

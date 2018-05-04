@@ -66,6 +66,8 @@
     <Compile Include="Collection\DanCollection.cs" />
     <Compile Include="Collection\DeckCollection.cs" />
     <Compile Include="Collection\HongDanCollection.cs" />
+    <Compile Include="Collection\PlayerCollection.cs" />
+    <Compile Include="Collection\PlayerHand.cs" />
     <Compile Include="Collection\PoongYak.cs" />
     <Compile Include="Collection\SpecialCards.cs" />
     <Compile Include="Card\SsangPi.cs" />
