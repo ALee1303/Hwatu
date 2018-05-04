@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using GoStop.Card;
 using GoStop.Collection;
@@ -11,27 +8,38 @@ namespace GoStop
 {
     public class Board
     {
-        private DeckCollection deck;
-        private List<Player> players;
-        private Dictionary<Player, int> ScoreBoard;
-        private Dictionary<Player, int> MinhwatuPoints;
+        protected DeckCollection deck;
+        protected List<Player> players;
+        protected Dictionary<Player, int> scoreBoard;
+        protected Dictionary<Player, PlayerCollection> collected;
 
         public Board()
         {
             deck = new DeckCollection();
             players = new List<Player>();
-            ScoreBoard = new Dictionary<Player, int>();
-            MinhwatuPoints = new Dictionary<Player, int>();
+            scoreBoard = new Dictionary<Player, int>();
+            collected = new Dictionary<Player, PlayerCollection>();
         }
 
-        public virtual void player_SpecialEmpty(object sender, EventArgs arg)
+        protected virtual void RegisterPlayer(Player player)
         {
-            SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)arg;
-            if (specialArg == null)
+            if (players.Contains(player))
                 return;
-            Player player = specialArg.Owner;
-            ScoreBoard[player] = specialArg.Points;
-            MinhwatuPoints[player] = specialArg.Points;
+            players.Add(player);
+            scoreBoard.Add(player, 0);
+            collected.Add(player, new PlayerCollection());
         }
+
+        public virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
+        {
+            var player = (Player)sender;
+
+        }
+
+        public virtual void player_SpecialEmpty(object sender, SpecialEmptyEventArgs arg)
+        { }
+
+        public virtual void player_HandEmpty(object sender, HandEmptyEventArgs args)
+        { }
     }
 }

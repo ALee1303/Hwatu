@@ -17,8 +17,7 @@ namespace GoStop
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            Services.AddService(typeof(SpriteBatch), spriteBatch);
+
             Content.RootDirectory = "Content";
         }
 
@@ -40,7 +39,8 @@ namespace GoStop
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), spriteBatch);
         }
 
         /// <summary>

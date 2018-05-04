@@ -60,9 +60,12 @@
     <Compile Include="Card\ChoDan.cs" />
     <Compile Include="Card\ChungDan.cs" />
     <Compile Include="Collection\BiYak.cs" />
+    <Compile Include="Collection\ChoDanCollection.cs" />
     <Compile Include="Collection\ChoYak.cs" />
+    <Compile Include="Collection\ChungDanCollection.cs" />
     <Compile Include="Collection\DanCollection.cs" />
     <Compile Include="Collection\DeckCollection.cs" />
+    <Compile Include="Collection\HongDanCollection.cs" />
     <Compile Include="Collection\PoongYak.cs" />
     <Compile Include="Collection\SpecialCards.cs" />
     <Compile Include="Card\SsangPi.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Card\Kwang.cs" />
     <Compile Include="Card\Pi.cs" />
     <Compile Include="IHanafudaPlayer.cs" />
+    <Compile Include="MinhwatuBoard.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
