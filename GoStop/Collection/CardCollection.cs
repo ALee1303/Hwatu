@@ -49,15 +49,6 @@ namespace GoStop.Collection
                 new ArgumentException("Pi is already contained");
         }
 
-        public bool Contains(Hanafuda item)
-        {
-            foreach (Hanafuda card in cards)
-                if (card == item)
-                    return true;
-            //if none was found
-            return false;
-        }
-
         public virtual bool Remove(Hanafuda item)
         {
             if (Contains(item))
@@ -78,6 +69,14 @@ namespace GoStop.Collection
             return toReturn;
         }
 
+        protected virtual Hanafuda Peek()
+        {
+            if (!this)
+                return null;
+            int idx = Count - 1;
+            return cards[idx];
+        }
+
         public void CopyTo(Hanafuda[] array, int arrayIndex)
         {
 
@@ -96,7 +95,17 @@ namespace GoStop.Collection
 
         public void Clear()
         {
-            cards.Clear();
+            if (cards != null && cards.Count > 0)
+                cards.Clear();
+        }
+
+        public bool Contains(Hanafuda item)
+        {
+            foreach (Hanafuda card in cards)
+                if (card == item)
+                    return true;
+            //if none was found
+            return false;
         }
 
         public bool Empty()

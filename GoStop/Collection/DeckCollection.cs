@@ -1,26 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using GoStop.Card;
 
 namespace GoStop.Collection
 {
     public class DeckCollection : CardCollection
     {
-        Random rnd;
         public DeckCollection()
         {
-            rnd = new Random();
-            this.cards = new List<Hanafuda>();
             Populate();
         }
 
         private void Populate()
         {
-            if(this)
-                this.cards.Clear();
+            Clear();
             this.cards = new List<Hanafuda>
             {
                 new Pi(Month.January), new Pi(Month.January), new HongDan(Month.January), new Kwang(Month.January),
@@ -47,6 +42,7 @@ namespace GoStop.Collection
 
         private void Shuffle()
         {
+            Random rnd = new Random();
             int toExc;
             Hanafuda temp;
             for (int i = this.Count()-1; i >= 0; i--)

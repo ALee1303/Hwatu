@@ -7,9 +7,25 @@ namespace GoStop
 {
     public class Player
     {
-        private Board board;
+        private Board _board;
         private CardCollection hand, collected;
-        private List<MinhwatuCollection> specials;
+
+        private List<SpecialCards> specials;
+
+        #region Observers
+        public virtual void CardWon(List<Hanafuda> won)
+        {
+            foreach (SpecialCards collection in specials)
+                collection.OnCardWon(won);
+        }
+        #endregion
+        
+        protected virtual void SubscribeSpecialEmptyEvent()
+        {
+            foreach (SpecialCards collection in specials)
+                collection.CollectionEmpty += _board.player_SpecialEmpty;
+        }
 
     }
+
 }

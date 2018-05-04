@@ -51,6 +51,7 @@
     <Compile Include="DeckTest.cs" />
     <Compile Include="EqualTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
