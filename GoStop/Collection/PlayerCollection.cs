@@ -10,5 +10,15 @@ namespace GoStop.Collection
     {
         public PlayerCollection()
         { }
+
+        public EventHandler<CardCollectedEventArgs> CardCollected;
+
+        protected virtual void OnCardCollected(CardCollectedEventArgs args)
+        { }
+    }
+
+    public class CardCollectedEventArgs : EventArgs
+    {
+
     }
 }

@@ -26,6 +26,7 @@ namespace GoStop
 
         public virtual void PlayCard()
         {
+
             if (!hand)
                 OnHandEmpty(null);
         }
@@ -43,13 +44,20 @@ namespace GoStop
         {
             HandEmpty?.Invoke(this, args);
         }
-
+        
+        /// <summary>
+        /// Subscribe board to all the special collections
+        /// </summary>
+        /// <param name="handler"></param>
         public virtual void SubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler)
         {
             foreach (SpecialCards collection in specials)
                 collection.CollectionEmpty += handler;
         }
-
+        /// <summary>
+        /// Unsubscribe board to all the special collections
+        /// </summary>
+        /// <param name="handler"></param>
         public virtual void UnsubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler)
         {
             foreach (SpecialCards collection in specials)

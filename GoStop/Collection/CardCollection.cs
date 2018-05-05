@@ -59,7 +59,7 @@ namespace GoStop.Collection
             return false;
         }
 
-        protected virtual Hanafuda Pop()
+        public virtual Hanafuda Draw()
         {
             if (!this)
                 return null;
@@ -69,7 +69,7 @@ namespace GoStop.Collection
             return toReturn;
         }
 
-        protected virtual Hanafuda Peek()
+        public virtual Hanafuda Peek()
         {
             if (!this)
                 return null;

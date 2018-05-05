@@ -34,12 +34,6 @@ namespace GoStop.Collection
             Shuffle();
         }
 
-        public Hanafuda DrawCard()
-        {
-            Hanafuda drawn = Pop();
-            return drawn;
-        }
-
         private void Shuffle()
         {
             Random rnd = new Random();
