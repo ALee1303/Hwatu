@@ -8,13 +8,17 @@ namespace GoStop.Collection
     /// <summary>
     /// collection of Hanafuda
     /// </summary>
-    public abstract class CardCollection : ICollection<Hanafuda>
+    public class CardCollection : ICollection<Hanafuda>
     {
         protected List<Hanafuda> cards; //list of hanafuda class
 
         public int Count { get => cards.Count; }
         public bool IsReadOnly { get => false; }
 
+        public CardCollection()
+        {
+            cards = new List<Hanafuda>();
+        }
 
         public Hanafuda this[int index]
         {

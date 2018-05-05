@@ -2,6 +2,7 @@
 using GoStop.Collection;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GoStop
 {
@@ -24,9 +25,19 @@ namespace GoStop
         }
         #endregion
 
-        public virtual void PlayCard()
+        public virtual Task TakeTurnAsync()
         {
+            return null;
+        }
 
+        protected virtual void PlayCard(Hanafuda card)
+        {
+            if (card != null && hand.Remove(card))
+            {
+                CardPlayedEventArgs args = new CardPlayedEventArgs();
+                args.Card = card;
+                OnCardPlayed(args);
+            }
             if (!hand)
                 OnHandEmpty(null);
         }
@@ -44,7 +55,7 @@ namespace GoStop
         {
             HandEmpty?.Invoke(this, args);
         }
-        
+
         /// <summary>
         /// Subscribe board to all the special collections
         /// </summary>
