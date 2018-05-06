@@ -11,13 +11,13 @@ namespace GoStop.Collection
 {
     public class FieldCollection : CardCollection
     {
-        private InputManager input;
         public FieldCollection() : base()
         { }
 
         public Task FindMatchTask(Hanafuda card)
         {
             List<Hanafuda> matches = new List<Hanafuda>();
+            //find all available cards
             foreach (Hanafuda match in cards)
             {
                 if (card.Month != match.Month)
@@ -38,7 +38,7 @@ namespace GoStop.Collection
 
                 FieldEventArgs args = new FieldEventArgs();
                 args.pairedCards = matches;
-                OnMultipleMatchFound(args);
+                //OnMultipleMatchFound(args);
             }
             cards.Remove(matches[0]);
             matches.Add(card);
@@ -54,18 +54,7 @@ namespace GoStop.Collection
         //    });
         //}
 
-        public event EventHandler<FieldEventArgs> MultipleMatchFound;
-        public event EventHandler<FieldEventArgs> CardsPaired;
 
-        protected virtual void OnMultipleMatchFound(FieldEventArgs args)
-        {
-            MultipleMatchFound?.Invoke(this, args);
-        }
-
-        protected virtual void OnCardsPaired(FieldEventArgs args)
-        {
-            CardsPaired?.Invoke(this, args);
-        }
     }
 
     public class FieldEventArgs : EventArgs

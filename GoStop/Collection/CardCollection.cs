@@ -64,7 +64,7 @@ namespace GoStop.Collection
                 if (!cards.Contains(card))
                     cards.Add(card);
                 else
-                    new ArgumentException("Element Alread contained: Index Value = " + ((CardEnumerator)enumerator).CurIdx);
+                    new ArgumentException("Element Alread contained: Error Index [" + ((CardEnumerator)enumerator).CurIdx + "]");
             }
         }
 
@@ -88,6 +88,8 @@ namespace GoStop.Collection
                 var card = enumerator.Current;
                 if (cards.Contains(card))
                     cards.Remove(card);
+                else
+                    new ArgumentException("Element Alread contained: Error Index [" + ((CardEnumerator)enumerator).CurIdx + "]");
             }
         }
 

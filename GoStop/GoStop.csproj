@@ -59,6 +59,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Card\ChoDan.cs" />
     <Compile Include="Card\ChungDan.cs" />
+    <Compile Include="IBoard.cs" />
     <Compile Include="Collection\FieldCollection.cs" />
     <Compile Include="MonoGameComponents\Drawables\DrawableCard.cs" />
     <Compile Include="Minhwatu\Collection\BiYak.cs" />

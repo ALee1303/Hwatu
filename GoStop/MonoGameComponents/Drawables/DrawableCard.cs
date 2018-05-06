@@ -18,8 +18,13 @@ namespace GoStop.MonoGameComponents.Drawables
         public DrawableCard(Game game, Hanafuda card, Sprite2D image) : base(game)
         {
             _card = card;
+            _card.OwnerChanged += card_OwnerChanged;
+            _card.HiddenChanged += card_HiddenChanged;
+            _card.LocationChanged += card_LocationChanged;
             _image = image;
         }
+
+        #region Drawable Override
 
         public override void Initialize()
         {
@@ -45,5 +50,20 @@ namespace GoStop.MonoGameComponents.Drawables
         {
             base.UnloadContent();
         }
+
+        #endregion
+
+        #region Event
+
+        protected virtual void card_OwnerChanged(object sender, HanafudaEventArgs args)
+        { }
+        
+        protected virtual void card_HiddenChanged(object sender, HanafudaEventArgs args)
+        { }
+
+        protected virtual void card_LocationChanged(object sender, HanafudaEventArgs args)
+        { }
+
+        #endregion
     }
 }

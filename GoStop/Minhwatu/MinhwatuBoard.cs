@@ -31,8 +31,7 @@ namespace GoStop
             var player = (Player)sender;
             if (player == null || player != currentPlayer)
                 return;
-            playerWaitList.Add(currentPlayer);
-            player.UnsubscribeSpecialEmptyEvent(collection_SpecialEmpty);
+            UnsubscribePlayer(currentPlayer);
         }
 
         protected override void collection_SpecialEmpty(object sender, EventArgs arg)

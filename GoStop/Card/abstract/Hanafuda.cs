@@ -19,7 +19,7 @@ namespace GoStop.Card
         private CardType type;
         private Location location;
         private bool hidden;
-        private Player owner;
+        private IHanafudaPlayer owner;
         #endregion
 
         protected Hanafuda(Month _month, CardType _type)
@@ -59,7 +59,7 @@ namespace GoStop.Card
                 OnHiddenChanged(args);
             }
         }
-        public Player Owner
+        public IHanafudaPlayer Owner
         {
             get => owner;
 
@@ -150,7 +150,7 @@ namespace GoStop.Card
 
     public class HanafudaEventArgs : EventArgs
     {
-        public Player Owner { get; set; }
+        public IHanafudaPlayer Owner { get; set; }
         public bool Hidden { get; set; }
         public Location Location { get; set; }
     }

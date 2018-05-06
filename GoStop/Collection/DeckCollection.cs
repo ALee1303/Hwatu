@@ -13,7 +13,7 @@ namespace GoStop.Collection
             Populate();
         }
 
-        private void Populate()
+        public void Populate()
         {
             Clear();
             this.cards = new List<Hanafuda>
