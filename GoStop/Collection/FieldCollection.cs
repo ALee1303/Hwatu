@@ -45,14 +45,14 @@ namespace GoStop.Collection
             return null;
         }
 
-        protected virtual async Task<Hanafuda> AwaitSelectionTask(List<Hanafuda> matches)
-        {
-            var result = await Task.Run(() =>
-            {
+        //protected virtual async Task<Hanafuda> AwaitSelectionTask(List<Hanafuda> matches)
+        //{
+        //    var result = await Task.Run(() =>
+        //    {
 
-                return null;
-            });
-        }
+        //        return null;
+        //    });
+        //}
 
         public event EventHandler<FieldEventArgs> MultipleMatchFound;
         public event EventHandler<FieldEventArgs> CardsPaired;

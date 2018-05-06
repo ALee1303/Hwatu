@@ -37,7 +37,11 @@ namespace UnitTestGoStop
         [TestMethod]
         public void AddListTest()
         {
-            foreach
+            collection = new CardCollection();
+            List<Hanafuda> cards = new List<Hanafuda> { new Kwang(Month.April), new Kwang(Month.December) };
+            collection.Add(cards);
+            Assert.AreEqual(collection[0], cards[0]);
+            Assert.AreEqual(collection[1], cards[1]);
         }
     }
 }

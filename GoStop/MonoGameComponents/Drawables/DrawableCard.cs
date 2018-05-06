@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using MG_Library;
 using GoStop.Card;
 
-namespace GoStop.GameComponent.Drawables
+namespace GoStop.MonoGameComponents.Drawables
 {
     public class DrawableCard : DrawableGameComponent
     {
@@ -23,7 +23,6 @@ namespace GoStop.GameComponent.Drawables
 
         public override void Initialize()
         {
-            _image.Position
             base.Initialize();
         }
 

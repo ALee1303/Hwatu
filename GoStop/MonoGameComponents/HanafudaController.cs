@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using MG_Library;
 using GoStop.Card;
 
-namespace GoStop
+namespace GoStop.MonoGameComponents
 {
     internal class MonogameController : GameComponent
     {
