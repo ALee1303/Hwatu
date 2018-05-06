@@ -19,45 +19,26 @@ namespace GoStop
             hand = new CardCollection();
         }
 
-        #region Observers
+        #region Interface Methods
 
-        public virtual void CardWon(List<Hanafuda> wonCards)
+        public void JoinGame(IBoard board)
+        {
+            _board.SubscribePlayer(this);
+        }
+
+        public void ExitGame(IBoard board)
+        {
+            _board.UnsubscribePlayer(this);
+        }
+
+        public virtual void OnCardWon(List<Hanafuda> wonCards)
         {
             foreach (SpecialCards collection in specials)
                 collection.OnCardWon(wonCards);
         }
 
-        #endregion
-
         public void TakeTurn()
         { }
-
-        protected virtual void PlayCard(Hanafuda card)
-        {
-            if (card == null || !hand.Remove(card))
-                return;
-            CardPlayedEventArgs args = new CardPlayedEventArgs();
-            args.Card = card;
-            if (!hand)
-                OnHandEmpty(EventArgs.Empty);
-            OnCardPlayed(args);
-        }
-
-
-        #region Event
-        public event EventHandler<CardPlayedEventArgs> CardPlayed;
-        public event EventHandler<EventArgs> HandEmpty;
-
-        protected virtual void OnCardPlayed(CardPlayedEventArgs args)
-        {
-            CardPlayed?.Invoke(this, args);
-        }
-
-        protected virtual void OnHandEmpty(EventArgs args)
-        {
-            HandEmpty?.Invoke(this, args);
-        }
-
 
         /// <summary>
         /// Subscribe board to all the special collections
@@ -77,6 +58,36 @@ namespace GoStop
             foreach (SpecialCards collection in specials)
                 collection.CollectionEmpty -= handler;
         }
+
+        #endregion
+
+        protected virtual void PlayCard(Hanafuda card)
+        {
+            if (card == null || !hand.Remove(card))
+                return;
+            CardPlayedEventArgs args = new CardPlayedEventArgs();
+            args.Card = card;
+            if (!hand)
+                OnHandEmpty(EventArgs.Empty);
+            OnCardPlayed(args);
+        }
+
+
+        #region Event
+
+        public event EventHandler<CardPlayedEventArgs> CardPlayed;
+        public event EventHandler<EventArgs> HandEmpty;
+
+        protected virtual void OnCardPlayed(CardPlayedEventArgs args)
+        {
+            CardPlayed?.Invoke(this, args);
+        }
+
+        protected virtual void OnHandEmpty(EventArgs args)
+        {
+            HandEmpty?.Invoke(this, args);
+        }
+
         #endregion
     }
 

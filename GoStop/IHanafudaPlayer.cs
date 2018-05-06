@@ -13,7 +13,7 @@ namespace GoStop
         void TakeTurn();
         void JoinGame(IBoard board);
         void ExitGame(IBoard board);
-        void CardWon(List<Hanafuda> wonCards);
+        void CardsCollected(List<Hanafuda> wonCards);
         void SubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
         void UnsubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
     }
