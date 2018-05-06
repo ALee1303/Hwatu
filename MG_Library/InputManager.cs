@@ -28,7 +28,7 @@ namespace MG_Library
     public enum MouseButton
     {
         Left, Middle, Right
-    };
+    }
 
     public class InputManager : GameComponent, IInputManager
     {
