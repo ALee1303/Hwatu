@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionTest.cs" />
     <Compile Include="DeckTest.cs" />
     <Compile Include="HanafudaTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
