@@ -8,11 +8,14 @@ namespace GoStop
 {
     public class Player : IHanafudaPlayer
     {
+
+        private IBoard _board;
         private CardCollection hand;
         private List<SpecialCards> specials;
 
-        public Player()
+        public Player(IBoard board)
         {
+            _board = board;
             hand = new CardCollection();
         }
 
@@ -26,11 +29,8 @@ namespace GoStop
 
         #endregion
 
-        public Task TakeTurn()
-        {
-            return Task.Run(()=> 
-            { });
-        }
+        public void TakeTurn()
+        { }
 
         protected virtual void PlayCard(Hanafuda card)
         {
@@ -42,6 +42,7 @@ namespace GoStop
                 OnHandEmpty(EventArgs.Empty);
             OnCardPlayed(args);
         }
+
 
         #region Event
         public event EventHandler<CardPlayedEventArgs> CardPlayed;
@@ -56,6 +57,7 @@ namespace GoStop
         {
             HandEmpty?.Invoke(this, args);
         }
+
 
         /// <summary>
         /// Subscribe board to all the special collections
