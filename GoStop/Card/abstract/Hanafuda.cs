@@ -2,9 +2,14 @@
 
 namespace GoStop.Card
 {
-    public enum Month { January, February, March, April, May, June, July, August, September, October, November, December }
+    public enum Month
+    {
+        January, February, March, April,
+        May, June, July, August, September,
+        October, November, December
+    }
     public enum CardType { Pi, Tti, Yul, Kwang }
-    public enum CardState { Hidden, Revealed }
+    public enum Location { Deck, Field, Hand, Collected }
 
     // TODO: add IHanafuda interface
     public abstract class Hanafuda : IEquatable<Hanafuda>
@@ -12,7 +17,8 @@ namespace GoStop.Card
         #region Fields
         private Month month;
         private CardType type;
-        private CardState state;
+        private Location location;
+        private bool hidden;
         private Player owner;
         #endregion
 
@@ -20,25 +26,37 @@ namespace GoStop.Card
         {
             month = _month;
             type = _type;
-            state = CardState.Hidden;
+            location = Location.Deck;
             owner = null;
         }
 
         #region Properties
         public Month Month { get => month; }
         public CardType Type { get => type; }
-        public CardState State
+        public Location State
         {
-            get => state;
+            get => location;
 
             set
             {
-                if (state == value)
+                if (location == value)
                     return;
-                state = value;
-                HanafudaEventArgs args = new HanafudaEventArgs();
-                args.State = value;
-                OnStateChanged(args);
+                location = value;
+                HanafudaEventArgs args = InitializeArgs();
+                OnLocationChanged(args);
+            }
+        }
+        public bool Hidden
+        {
+            get => hidden;
+
+            set
+            {
+                if (hidden == value)
+                    return;
+                hidden = value;
+                HanafudaEventArgs args = InitializeArgs();
+                OnHiddenChanged(args);
             }
         }
         public Player Owner
@@ -50,12 +68,20 @@ namespace GoStop.Card
                 if (owner == value)
                     return;
                 owner = value;
-                HanafudaEventArgs args = new HanafudaEventArgs();
-                args.Owner = value;
+                HanafudaEventArgs args = InitializeArgs();
                 OnOwnerChanged(args);
             }
         }
         #endregion
+
+        private HanafudaEventArgs InitializeArgs()
+        {
+            HanafudaEventArgs args = new HanafudaEventArgs();
+            args.Owner = owner;
+            args.Location = location;
+            args.Hidden = hidden;
+            return args;
+        }
 
         #region IEquatable
         //from interface
@@ -101,23 +127,31 @@ namespace GoStop.Card
 
         #region Events
         public event EventHandler<HanafudaEventArgs> OwnerChanged;
-        public event EventHandler<HanafudaEventArgs> StateChanged;
+        public event EventHandler<HanafudaEventArgs> HiddenChanged;
+        public event EventHandler<HanafudaEventArgs> LocationChanged;
 
         protected virtual void OnOwnerChanged(HanafudaEventArgs args)
         {
             OwnerChanged?.Invoke(this, args);
         }
-        
-        protected virtual void OnStateChanged(HanafudaEventArgs args)
+
+        protected virtual void OnHiddenChanged(HanafudaEventArgs args)
         {
-            StateChanged?.Invoke(this, args);
+            HiddenChanged?.Invoke(this, args);
         }
+
+        protected virtual void OnLocationChanged(HanafudaEventArgs args)
+        {
+            LocationChanged?.Invoke(this, args);
+        }
+
         #endregion
     }
 
     public class HanafudaEventArgs : EventArgs
     {
         public Player Owner { get; set; }
-        public CardState State { get; set; }
+        public bool Hidden { get; set; }
+        public Location Location { get; set; }
     }
 }
