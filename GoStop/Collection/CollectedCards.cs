@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GoStop.Collection
 {
-    public class PlayerCollection : CardCollection
+    public class CollectedCards : CardCollection
     {
-        public PlayerCollection()
+        public CollectedCards() : base()
         { }
 
         public EventHandler<CardCollectedEventArgs> CardCollected;

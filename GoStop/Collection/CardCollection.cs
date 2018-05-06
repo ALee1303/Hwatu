@@ -129,13 +129,7 @@ namespace GoStop.Collection
 
         protected virtual void OnCollectionEmpty(EventArgs e)
         {
-            var collectionEmptyHandler = CollectionEmpty;
-            {
-                if (collectionEmptyHandler != null)
-                {
-                    collectionEmptyHandler(this, e);
-                }
-            }
+            CollectionEmpty?.Invoke(this, e);
         }
 
         #endregion

@@ -9,6 +9,7 @@ namespace GoStop.Collection
             cards.Add(new ChoDan(Month.April));
             cards.Add(new ChoDan(Month.May));
             cards.Add(new ChoDan(Month.July));
+            cards.TrimExcess();
         }
     }
 }

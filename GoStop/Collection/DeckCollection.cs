@@ -8,7 +8,7 @@ namespace GoStop.Collection
 {
     public class DeckCollection : CardCollection
     {
-        public DeckCollection()
+        public DeckCollection() : base()
         {
             Populate();
         }

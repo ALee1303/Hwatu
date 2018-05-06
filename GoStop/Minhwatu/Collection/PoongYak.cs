@@ -10,6 +10,7 @@ namespace GoStop.Collection
             cards.Add(new Pi(Month.October));
             cards.Add(new ChungDan(Month.October));
             cards.Add(new Yul(Month.October));
+            cards.TrimExcess();
         }
     }
 }

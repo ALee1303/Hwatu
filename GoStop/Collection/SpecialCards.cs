@@ -9,7 +9,7 @@ namespace GoStop.Collection
         private int _points;
         private Player _owner;
 
-        protected SpecialCards(Player owner, int points)
+        protected SpecialCards(Player owner, int points) : base()
         {
             this._owner = owner;
             this._points = points;
