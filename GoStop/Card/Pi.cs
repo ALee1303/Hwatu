@@ -13,7 +13,10 @@ namespace GoStop.Card
         PiType piType;
 
         public Pi(Month _month) : this(_month, PiType.pi)
-        { }
+        {
+            if (_month == Month.December)
+                new ArgumentException("Invalid Card Type");
+        }
 
         protected Pi(Month _month, PiType _piType) : base(_month, CardType.Pi)
         {

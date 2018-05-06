@@ -9,6 +9,9 @@ namespace GoStop.Card
     public class SsangPi : Pi
     {
         public SsangPi(Month _month) : base(_month, PiType.SsangPi)
-        { }
+        {
+            if (_month != Month.December)
+                new ArgumentException("Invalid Card Type");
+        }
     }
 }
