@@ -39,7 +39,7 @@ namespace GoStop
             CardPlayedEventArgs args = new CardPlayedEventArgs();
             args.Card = card;
             if (!hand)
-                OnHandEmpty(null);
+                OnHandEmpty(EventArgs.Empty);
             OnCardPlayed(args);
         }
 

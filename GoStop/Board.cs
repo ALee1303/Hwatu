@@ -15,18 +15,18 @@ namespace GoStop
         protected Dictionary<IHanafudaPlayer, int> scoreBoard;
         //players
         protected Player currentPlayer;
-        protected List<IHanafudaPlayer> playerWaitedList;
+        protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
 
         public Board()
         {
             deck = new DeckCollection();
             field = new FieldCollection();
-            field.MatchFound += field_MatchFound;
+            field.MultipleMatchFound += field_MatchFound;
             field.CardsPaired += field_CardsPaired;
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
             collected = new Dictionary<IHanafudaPlayer, CardCollection>();
-            currentPlayer = new Player(this);
+            currentPlayer = new Player();
             orderedPlayers = new Queue<IHanafudaPlayer>();
         }
 
@@ -34,7 +34,7 @@ namespace GoStop
         {
             if (!IsNewPlayer(player))
                 return;
-            playerWaitedList.Add(player);
+            playerWaitList.Add(player);
             //add scoreBoard
             scoreBoard.Add(player, 0);
             collected.Add(player, new CollectedCards());
@@ -72,7 +72,7 @@ namespace GoStop
         {
             return currentPlayer != player
                 && !orderedPlayers.Contains(player)
-                && !playerWaitedList.Contains(player);
+                && !playerWaitList.Contains(player);
         }
     }
 }

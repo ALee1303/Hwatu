@@ -53,6 +53,19 @@ namespace GoStop.Collection
                 new ArgumentException("Pi is already contained");
         }
 
+        public void Add(IEnumerable<Hanafuda> items)
+        {
+            var enumerator = items.GetEnumerator();
+            if (enumerator == null || !(enumerator is CardEnumerator))
+                new ArgumentException("Invalid enumerable");
+            while (enumerator.MoveNext())
+            {
+                var card = enumerator.Current;
+                if (!cards.Contains(card))
+                    cards.Add(card);
+            }
+        }
+
         public virtual bool Remove(Hanafuda item)
         {
             if (Contains(item))
@@ -126,10 +139,16 @@ namespace GoStop.Collection
         #region Event
 
         public event EventHandler<EventArgs> CollectionEmpty;
+        public event EventHandler<EventArgs> CollectionChanged;
 
         protected virtual void OnCollectionEmpty(EventArgs e)
         {
             CollectionEmpty?.Invoke(this, e);
+        }
+
+        protected virtual void OnCollectionChanged(EventArgs e)
+        {
+            CollectionChanged?.Invoke(this, e);
         }
 
         #endregion
@@ -154,6 +173,7 @@ namespace GoStop.Collection
             CardCollection _cards;
             int curIdx;
             Hanafuda curCard;
+            public bool IsEmpty { get => _cards.Empty(); }
 
             public CardEnumerator(CardCollection cards)
             {

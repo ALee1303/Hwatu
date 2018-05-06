@@ -14,7 +14,9 @@ namespace GoStop.Collection
         public EventHandler<CardCollectedEventArgs> CardCollected;
 
         protected virtual void OnCardCollected(CardCollectedEventArgs args)
-        { }
+        {
+            CardCollected?.Invoke(this, args);
+        }
     }
 
     public class CardCollectedEventArgs : EventArgs

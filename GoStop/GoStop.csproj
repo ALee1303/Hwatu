@@ -60,6 +60,7 @@
     <Compile Include="Card\ChoDan.cs" />
     <Compile Include="Card\ChungDan.cs" />
     <Compile Include="Collection\FieldCollection.cs" />
+    <Compile Include="GameComponent\Drawables\DrawableCard.cs" />
     <Compile Include="Minhwatu\Collection\BiYak.cs" />
     <Compile Include="Minhwatu\Collection\ChoDanCollection.cs" />
     <Compile Include="Minhwatu\Collection\ChoYak.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="Card\SsangPi.cs" />
     <Compile Include="Card\Yul.cs" />
     <Compile Include="Minhwatu\Collection\YakCollection.cs" />
-    <Compile Include="DeckManager.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Card\abstract\Hanafuda.cs" />
     <Compile Include="Card\HongDan.cs" />
@@ -81,7 +81,7 @@
     <Compile Include="Card\Pi.cs" />
     <Compile Include="IHanafudaPlayer.cs" />
     <Compile Include="Minhwatu\MinhwatuBoard.cs" />
-    <Compile Include="MonoGame\MonoGameController.cs" />
+    <Compile Include="GameComponent\HanafudaController.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

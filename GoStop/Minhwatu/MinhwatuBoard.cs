@@ -31,7 +31,7 @@ namespace GoStop
             var player = (Player)sender;
             if (player == null || player != currentPlayer)
                 return;
-            enqueuedPlayers.Enqueue(currentPlayer);
+            playerWaitList.Add(currentPlayer);
             player.UnsubscribeSpecialEmptyEvent(collection_SpecialEmpty);
         }
 
