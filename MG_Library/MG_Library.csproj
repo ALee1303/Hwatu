@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Game1.cs" />
     <Compile Include="GameScreen.cs" />
+    <Compile Include="InputHandler.cs" />
     <Compile Include="Sprite2D.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -41,7 +41,7 @@ namespace MG_Library
 
         protected override void UnloadContent()
         {
-            Game.Content.Unload();
+            base.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)

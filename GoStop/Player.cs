@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoStop
 {
-    public class Player
+    public class Player : IHanafudaPlayer
     {
         private Board _board;
         private CardCollection hand;
@@ -14,41 +14,41 @@ namespace GoStop
 
         public Player(Board board)
         {
-
+            _board = board;
+            hand = new CardCollection();
         }
 
         #region Observers
-        public virtual void CardWon(List<Hanafuda> won)
+
+        public virtual void CardWon(List<Hanafuda> wonCards)
         {
             foreach (SpecialCards collection in specials)
-                collection.OnCardWon(won);
+                collection.OnCardWon(wonCards);
         }
+
         #endregion
 
-        public virtual Task TakeTurnAsync()
-        {
-            return null;
-        }
+        public void TakeTurn()
+        { }
 
         protected virtual void PlayCard(Hanafuda card)
         {
-            if (card != null && hand.Remove(card))
-            {
-                CardPlayedEventArgs args = new CardPlayedEventArgs();
-                args.Card = card;
-                OnCardPlayed(args);
-            }
+            if (card == null || !hand.Remove(card))
+                return;
+            CardPlayedEventArgs args = new CardPlayedEventArgs();
+            args.Card = card;
             if (!hand)
                 OnHandEmpty(null);
+            OnCardPlayed(args);
         }
 
+        #region Event
         public event EventHandler<CardPlayedEventArgs> CardPlayed;
         public event EventHandler<EventArgs> HandEmpty;
 
         protected virtual void OnCardPlayed(CardPlayedEventArgs args)
         {
-            if (args.Card != null)
-                CardPlayed?.Invoke(this, args);
+            CardPlayed?.Invoke(this, args);
         }
 
         protected virtual void OnHandEmpty(EventArgs args)
@@ -74,6 +74,7 @@ namespace GoStop
             foreach (SpecialCards collection in specials)
                 collection.CollectionEmpty -= handler;
         }
+        #endregion
     }
 
     public class CardPlayedEventArgs : EventArgs

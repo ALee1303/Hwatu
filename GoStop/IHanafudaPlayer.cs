@@ -10,6 +10,9 @@ namespace GoStop
 {
     public interface IHanafudaPlayer
     {
-        void CardWon(Stack<Hanafuda> wonCards);
+        void CardWon(List<Hanafuda> wonCards);
+        void TakeTurn();
+        void SubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
+        void UnsubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
     }
 }

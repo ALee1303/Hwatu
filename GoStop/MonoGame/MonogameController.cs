@@ -9,13 +9,13 @@ using MG_Library;
 
 namespace GoStop
 {
-    internal class MonogameController
+    internal class MonogameController : GameComponent
     {
-        private InputManager inputManager;
+        private IInputManager inputManager;
 
-        public MonogameController()
+        public MonogameController(Game game) : base(game)
         {
-            inputManager = new InputManager();
+            inputManager = Game.Services.GetService<IInputManager>();
         }
     }
 }

@@ -10,56 +10,69 @@ namespace GoStop
     {
         //cards
         protected DeckCollection deck;
-        protected CardCollection field;
-        protected Dictionary<Player, PlayerCollection> collected;
-        protected Dictionary<Player, int> scoreBoard;
+        protected FieldCollection field;
+        protected Dictionary<IHanafudaPlayer, CardCollection> collected;
+        protected Dictionary<IHanafudaPlayer, int> scoreBoard;
         //players
         protected Player currentPlayer;
-        protected Queue<Player> orderedPlayers;
-        protected List<Player> finishedPlayers;
+        protected List<IHanafudaPlayer> playerWaitedList;
+        protected Queue<IHanafudaPlayer> orderedPlayers;
 
         public Board()
         {
             deck = new DeckCollection();
-            orderedPlayers = new Queue<Player>();
-            finishedPlayers = new List<Player>();
-            scoreBoard = new Dictionary<Player, int>();
-            collected = new Dictionary<Player, PlayerCollection>();
+            field = new FieldCollection();
+            field.MatchFound += field_MatchFound;
+            field.CardsPaired += field_CardsPaired;
+            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
+            collected = new Dictionary<IHanafudaPlayer, CardCollection>();
+            currentPlayer = new Player(this);
+            orderedPlayers = new Queue<IHanafudaPlayer>();
         }
 
-        public virtual void RegisterPlayer(Player player)
+        public virtual void RegisterPlayer(IHanafudaPlayer player)
         {
-            if (orderedPlayers.Contains(player))
+            if (!IsNewPlayer(player))
                 return;
-            orderedPlayers.Enqueue(player);
-            player.SubscribeSpecialEmptyEvent(collection_SpecialEmpty);
+            playerWaitedList.Add(player);
+            //add scoreBoard
             scoreBoard.Add(player, 0);
-            collected.Add(player, new PlayerCollection());
-        }
-
-        protected virtual void CheckAvailableCard(Hanafuda card)
-        {
-
+            collected.Add(player, new CollectedCards());
+            //event
+            player.SubscribeSpecialEmptyEvent(collection_SpecialEmpty);
+            var p = (Player)player;
+            if (p != null)
+            {
+                p.CardPlayed += player_CardPlayed;
+                p.HandEmpty += player_HandEmpty;
+            }
         }
 
         protected virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
         {
             var player = (Player)sender;
             if (player == currentPlayer)
+            { }
 
         }
 
         protected virtual void player_HandEmpty(object sender, EventArgs args)
-        {
-            var player = (Player)sender;
-            if (player == null || player != currentPlayer)
-                return;
-            finishedPlayers.Add(currentPlayer);
-            player.UnsubscribeSpecialEmptyEvent(collection_SpecialEmpty);
-        }
+        { }
+
+        protected virtual void field_MatchFound(object sender, FieldEventArgs args)
+        { }
+
+        protected virtual void field_CardsPaired(object sender, FieldEventArgs args)
+        { }
 
         protected virtual void collection_SpecialEmpty(object sender, EventArgs arg)
         { }
 
+        protected bool IsNewPlayer(IHanafudaPlayer player)
+        {
+            return currentPlayer != player
+                && !orderedPlayers.Contains(player)
+                && !playerWaitedList.Contains(player);
+        }
     }
 }

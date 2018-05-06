@@ -28,7 +28,11 @@ namespace GoStop
 
         protected override void player_HandEmpty(object sender, EventArgs args)
         {
-            base.player_HandEmpty(sender, args);
+            var player = (Player)sender;
+            if (player == null || player != currentPlayer)
+                return;
+            enqueuedPlayers.Enqueue(currentPlayer);
+            player.UnsubscribeSpecialEmptyEvent(collection_SpecialEmpty);
         }
 
         protected override void collection_SpecialEmpty(object sender, EventArgs arg)
