@@ -63,6 +63,8 @@ namespace GoStop.Collection
                 var card = enumerator.Current;
                 if (!cards.Contains(card))
                     cards.Add(card);
+                else
+                    new ArgumentException("Element Alread contained: Index Value = " + ((CardEnumerator)enumerator).CurIdx);
             }
         }
 
@@ -74,6 +76,19 @@ namespace GoStop.Collection
                 return true;
             }
             return false;
+        }
+
+        public void Remove(IEnumerable<Hanafuda> items)
+        {
+            var enumerator = items.GetEnumerator();
+            if (enumerator == null || !(enumerator is CardEnumerator))
+                new ArgumentException("Invalid enumerable");
+            while (enumerator.MoveNext())
+            {
+                var card = enumerator.Current;
+                if (cards.Contains(card))
+                    cards.Remove(card);
+            }
         }
 
         public virtual Hanafuda Draw()
@@ -173,6 +188,7 @@ namespace GoStop.Collection
             CardCollection _cards;
             int curIdx;
             Hanafuda curCard;
+            public int CurIdx { get => curIdx; }
             public bool IsEmpty { get => _cards.Empty(); }
 
             public CardEnumerator(CardCollection cards)
