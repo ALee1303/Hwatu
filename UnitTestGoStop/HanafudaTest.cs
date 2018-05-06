@@ -1,13 +1,33 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using GoStop;
 using GoStop.Card;
 
 namespace UnitTestGoStop
 {
     [TestClass]
-    public class EqualTest
+    public class HanafudaTest
     {
         Hanafuda hanafuda;
+
+        [TestMethod]
+        public void OwnerTest()
+        {
+            hanafuda = new Kwang(Month.April);
+            //no owner initially
+            Assert.AreEqual(null, hanafuda.Owner);
+            //initialization
+            Player player = new Player();
+            bool isTriggered = false;
+            Player argsPlayer = null;
+            hanafuda.OwnerChanged += (s, e) => {
+                isTriggered = true;
+                argsPlayer = e.Owner; };
+            hanafuda.Owner = player;
+            Assert.AreEqual(true, isTriggered);
+            Assert.AreEqual(player, hanafuda.Owner);
+            Assert.AreEqual(player, argsPlayer);
+        }
 
         [TestMethod]
         public void KwangEquals()

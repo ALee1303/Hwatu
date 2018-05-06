@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeckTest.cs" />
-    <Compile Include="EqualTest.cs" />
+    <Compile Include="HanafudaTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialTest.cs" />
   </ItemGroup>
