@@ -8,13 +8,11 @@ namespace GoStop
 {
     public class Player : IHanafudaPlayer
     {
-        private Board _board;
         private CardCollection hand;
         private List<SpecialCards> specials;
 
-        public Player(Board board)
+        public Player()
         {
-            _board = board;
             hand = new CardCollection();
         }
 
@@ -28,8 +26,11 @@ namespace GoStop
 
         #endregion
 
-        public void TakeTurn()
-        { }
+        public Task TakeTurn()
+        {
+            return Task.Run(()=> 
+            { });
+        }
 
         protected virtual void PlayCard(Hanafuda card)
         {

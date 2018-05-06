@@ -11,7 +11,7 @@ namespace GoStop
     public interface IHanafudaPlayer
     {
         void CardWon(List<Hanafuda> wonCards);
-        void TakeTurn();
+        Task TakeTurn();
         void SubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
         void UnsubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
     }
