@@ -2,43 +2,53 @@
 using GoStop.Collection;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+
+using GoStop.MonoGameComponents;
 
 namespace GoStop
 {
     public class Player : IHanafudaPlayer
     {
-
-        private IBoard _board;
         private CardCollection hand;
-        private List<SpecialCards> specials;
+        protected List<SpecialCards> specials;
 
-        public Player(IBoard board)
+        public Player()
         {
-            _board = board;
             hand = new CardCollection();
         }
 
+        public CardCollection Hand { get => hand; }
+
         #region Interface Methods
 
-        public void JoinGame(IBoard board)
+        public virtual void TakeTurn()
+        { }
+
+        public void JoinBoard(BoardManager manager)
         {
-            _board.SubscribePlayer(this);
+            manager.OnJoinBoard(this);
         }
 
-        public void ExitGame(IBoard board)
+        public void ExitBoard(BoardManager manager)
         {
-            _board.UnsubscribePlayer(this);
+            manager.OnExitBoard(this);
         }
 
-        public virtual void OnCardWon(List<Hanafuda> wonCards)
+        public void RenewHandAndSpecial()
+        {
+            hand.Clear();
+            foreach (SpecialCards special in specials)
+                special.Clear();
+        }
+
+        public virtual void PrepareSpecialCollection()
+        { }
+
+        public virtual void CardsCollected(List<Hanafuda> wonCards)
         {
             foreach (SpecialCards collection in specials)
-                collection.OnCardWon(wonCards);
+                collection.OnCardsCollected(wonCards);
         }
-
-        public void TakeTurn()
-        { }
 
         /// <summary>
         /// Subscribe board to all the special collections

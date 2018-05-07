@@ -23,6 +23,8 @@ namespace GoStop.Minhwatu
         { }
 
         public Task TakeTurnAsync()
-        { }
+        {
+            return null;
+        }
     }
 }
