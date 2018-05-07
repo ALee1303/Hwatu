@@ -85,17 +85,12 @@ namespace GoStop.MonoGameComponents.Drawables
 
         public virtual void Draw()
         {
-            if (Revealed)
-                _frontImage.Draw();
-
+            CurrentImage.Draw();
         }
 
         /// <summary>
-        /// Change card display side based on its status
-        /// </summary>
-
-        /// <summary>
         /// Change Hidden status based on MainPlayer
+        /// called from card event
         /// </summary>
         private void CheckRevealedByOwner()
         {
@@ -103,7 +98,7 @@ namespace GoStop.MonoGameComponents.Drawables
                 _card.Revealed = true;
         }
 
-        #region Event
+        #region Card EventHandler Subscribable
 
         // currently not used
         protected virtual void card_OwnerChanged(object sender, HanafudaEventArgs args)

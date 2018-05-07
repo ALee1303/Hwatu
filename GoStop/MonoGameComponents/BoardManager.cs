@@ -182,7 +182,7 @@ namespace GoStop.MonoGameComponents
             else
                 deckCards.Remove(drawable);
             handCards[owner].Add(drawable);
-            // 
+            drawable.Position = GetHandLocation(owner);
         }
 
         public void drawable_MovedToField(DrawableCard drawable)
@@ -190,19 +190,28 @@ namespace GoStop.MonoGameComponents
             Month idx = drawable.Card.Month;
             deckCards.Remove(drawable);
             fieldCards[idx].Add(drawable);
-            // TODO: Location change
+            drawable.Position = GetFieldLocation(idx);
         }
 
         /// Hardcoded for test screen
         public Vector2 GetHandLocation(IHanafudaPlayer owner)
         {
-            
             int slot = handCards[owner].Count;
-            Vector2 position = new Vector2(25.0f * slot, 40.5f * slot);
+            Vector2 position = new Vector2(25.0f * slot, 41.0f * slot);
             position.Y += 10;
             position.X += 5 * slot;
             if (owner == MainPlayer)
                 position.Y += 900;
+            return position;
+        }
+
+        public Vector2 GetFieldLocation(Month month)
+        {
+            int slot = (int)month;
+            int xOffSet = (slot % 6) + 1;
+            int yOffSet = (int)month < 6 ? 1 : 2;
+            Vector2 position = new Vector2(30.0f * xOffSet, 200 * yOffSet);
+            return position;
         }
         #endregion
     }

@@ -30,5 +30,12 @@ namespace UnitTestGoStop
             Assert.AreEqual(20, point);
             Assert.IsInstanceOfType(collection, typeof(SpecialCards));
         }
+
+        [TestMethod]
+        public void ModTest()
+        {
+            int mod = 0 % 6;
+            Assert.AreEqual(0, mod);
+        }
     }
 }

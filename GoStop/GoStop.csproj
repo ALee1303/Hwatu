@@ -87,8 +87,8 @@
     <Compile Include="Card\Pi.cs" />
     <Compile Include="IHanafudaPlayer.cs" />
     <Compile Include="Minhwatu\MinhwatuBoard.cs" />
+    <Compile Include="MonoGameComponents\Drawables\SpriteImage\BackImage.cs" />
     <Compile Include="MonoGameComponents\HanafudaController.cs" />
-    <Compile Include="MonoGameComponents\TestSprite.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,6 +104,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\April\Pi.png" />
+    <Content Include="Content\April\Pi2.png" />
+    <Content Include="Content\April\Tti.png" />
+    <Content Include="Content\April\Yul.png" />
+    <Content Include="Content\August\Kwang.png" />
+    <Content Include="Content\August\Pi.png" />
+    <Content Include="Content\August\Pi2.png" />
+    <Content Include="Content\August\Yul.png" />
+    <Content Include="Content\December\hanafuda-all1_02.png" />
+    <Content Include="Content\December\hanafuda-all1_14.png" />
+    <Content Include="Content\December\hanafuda-all1_26.png" />
+    <Content Include="Content\December\hanafuda-all1_38.png" />
+    <Content Include="Content\February\Pi.png" />
+    <Content Include="Content\February\Pi2.png" />
+    <Content Include="Content\February\Tti.png" />
+    <Content Include="Content\February\Yul.png" />
+    <Content Include="Content\January\Kwang.png" />
+    <Content Include="Content\January\Pi.png" />
+    <Content Include="Content\January\Pi2.png" />
+    <Content Include="Content\January\Tti.png" />
+    <Content Include="Content\July\Pi.png" />
+    <Content Include="Content\July\Pi2.png" />
+    <Content Include="Content\July\Tti.png" />
+    <Content Include="Content\July\Yul.png" />
+    <Content Include="Content\June\Pi.png" />
+    <Content Include="Content\June\Pi2.png" />
+    <Content Include="Content\June\Tti.png" />
+    <Content Include="Content\June\Yul.png" />
+    <Content Include="Content\March\Kwang.png" />
+    <Content Include="Content\March\Pi.png" />
+    <Content Include="Content\March\Pi2.png" />
+    <Content Include="Content\March\Tti.png" />
+    <Content Include="Content\May\Pi.png" />
+    <Content Include="Content\May\Pi2.png" />
+    <Content Include="Content\May\Tti.png" />
+    <Content Include="Content\May\Yul.png" />
+    <Content Include="Content\November\Kwang.png" />
+    <Content Include="Content\November\Pi.png" />
+    <Content Include="Content\November\Pi2.png" />
+    <Content Include="Content\November\SsangPi.png" />
+    <Content Include="Content\October\Pi.png" />
+    <Content Include="Content\October\Pi2.png" />
+    <Content Include="Content\October\Tti.png" />
+    <Content Include="Content\October\Yul.png" />
+    <Content Include="Content\September\Pi.png" />
+    <Content Include="Content\September\Pi2.png" />
+    <Content Include="Content\September\Tti.png" />
+    <Content Include="Content\September\Yul.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +171,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="MonoGameComponents\Drawables\SpriteImage\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
