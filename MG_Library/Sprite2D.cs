@@ -7,11 +7,19 @@ namespace MG_Library
 {
     public class Sprite2D : DrawableGameComponent
     {
+        public Texture2D Texture;
         public float Alpha, Rotation;
         public string Path;
         public Vector2 Position, Scale, Origin;
-        public Rectangle SourceRect;
-        public Texture2D Texture;
+        public Rectangle SourceRect { get => Texture.Bounds; }
+        public Rectangle BoundingRect
+        {
+            get
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y,
+                    Texture.Width, Texture.Height);
+            }
+        }
 
         private SpriteBatch _spriteBatch;
 
@@ -21,7 +29,6 @@ namespace MG_Library
             Position = Origin = Vector2.Zero;
             Scale = Vector2.One;
             Alpha = 1.0f;
-            SourceRect = Rectangle.Empty;
         }
 
         public override void Initialize()
@@ -36,7 +43,6 @@ namespace MG_Library
             if (Path == null)
                 return;
             Texture = Game.Content.Load<Texture2D>(Path);
-            SourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
         }
 
@@ -50,7 +56,7 @@ namespace MG_Library
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Draw(Texture, Position + Origin,
+            _spriteBatch.Draw(Texture, Position - Origin,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }
@@ -60,7 +66,7 @@ namespace MG_Library
         /// </summary>
         public virtual void Draw()
         {
-            _spriteBatch.Draw(Texture, Position + Origin,
+            _spriteBatch.Draw(Texture, Position - Origin,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }
@@ -71,7 +77,7 @@ namespace MG_Library
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position + Origin,
+            spriteBatch.Draw(Texture, Position - Origin,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }
