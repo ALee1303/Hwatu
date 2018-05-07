@@ -30,8 +30,8 @@ namespace GoStop
         {
             var player = (Player)sender;
             if (player == null || player != currentPlayer)
-                return;
-            UnsubscribePlayer(currentPlayer);
+                new ArgumentException("Invalid player HandEmpty");
+            RemovePlayer(currentPlayer);
         }
 
         protected override void collection_SpecialEmpty(object sender, EventArgs arg)

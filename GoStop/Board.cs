@@ -10,6 +10,7 @@ namespace GoStop
 {
     public class Board : IBoard
     {
+        private int playingCount;
         //cards
         protected DeckCollection deck;
         protected Dictionary<Month, CardCollection> field;
@@ -20,46 +21,67 @@ namespace GoStop
         protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
 
-        public int DeckCount { get => deck.Count; }
+        public IHanafudaPlayer CurrentPlayer
+        {
+            get => currentPlayer;
+            private set
+            {
+                if (currentPlayer == value)
+                    return;
+                currentPlayer = value;
+                if (currentPlayer != null)
+                    OnNewPlayerTurn();
+            }
+        }
+        // Adjusted in subscribe and unsubscribe
+        public int PlayingCount
+        {
+            get => playingCount;
+            private set
+            {
+                if (playingCount == value)
+                    return;
+                playingCount = value;
+                if (playingCount == 0)
+                    OnAllPlayerRemoved();
+            }
+        }
+        public DeckCollection Deck { get => deck; }
 
         public Board()
         {
-            deck = new DeckCollection();
+            deck = DeckCollection.Instance;
             field = new Dictionary<Month, CardCollection>();
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
+            playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
         }
 
-        // TODO:DealCard, PrepareGame, FinishGame, GameResult
+        // TODO:DealCard, FinishGame, GameResult
         #region Protected Methods
 
-        protected virtual void PrepareWaitingPlayers()
+
+        protected virtual void PrepareGame()
         {
-            if (currentPlayer != null)
+            OrderWaitingPlayers();
+            DealCard();
+        }
+
+        protected virtual void OrderWaitingPlayers()
+        {
+            if (currentPlayer != null || orderedPlayers.Count > 0)
                 new ArgumentException("Game in progress");
             foreach (IHanafudaPlayer player in playerWaitList)
-                SubscribePlayer(player);
+                AddPlayer(player);
         }
 
         protected virtual void ResetBoard()
         {
-            deck.Populate();
+            deck.GatherCards();
             field.Clear();
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
-            // add existing players
-            foreach (IHanafudaPlayer player in orderedPlayers)
-            {
-                scoreBoard.Add(player, 0);
-                collected.Add(player, new CollectedCards());
-            }
-            PrepareWaitingPlayers();
-        }
-
-        protected void DealCard()
-        {
-
         }
 
         protected bool IsNewPlayer(IHanafudaPlayer player)
@@ -72,58 +94,116 @@ namespace GoStop
 
         public virtual void StartGame()
         {
-
+            PrepareGame();
+            CurrentPlayer = orderedPlayers.Dequeue();
         }
 
         public virtual void EndGame()
         {
-
+            //in case game ends early
+            foreach (IHanafudaPlayer player in orderedPlayers)
+            {
+                player.RenewHandAndSpecial();
+                RemovePlayer(player);
+            }
+            ResetBoard();
         }
+        
+        /// <summary>
+        /// Deal card to all waiting players
+        /// Queueing them into the Game
+        /// </summary>
+        protected virtual void DealCard()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                DealCardsOnField();
+                foreach (IHanafudaPlayer player in orderedPlayers)
+                    DealCard(player);
+            }
+        }
+
+        /// <summary>
+        /// Deal card to specific player of specific amount
+        /// Overload used inside DealCard()
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="amount">2p = 5, 3p = 4 then 3</param>
+        private void DealCard(IHanafudaPlayer player, int amount = 5)
+        {
+            IEnumerable<Hanafuda> draws = deck.DrawCard(amount);
+            foreach (Hanafuda drawn in draws)
+            {
+                drawn.Owner = player;
+                drawn.Location = Location.Hand;
+            }
+            player.Hand.Add(draws);
+        }
+
+        /// <summary>
+        /// Spread cards on dictionary of cards based on their month
+        /// </summary>
+        /// <param name="amount">2p = 4, 3p = 3</param>
+        protected void DealCardsOnField(int amount = 4)
+        {
+            IEnumerable<Hanafuda> draws = deck.DrawCard(amount);
+            OrganizeField(draws);
+        }
+
+        protected void OrganizeField(IEnumerable<Hanafuda> draws)
+        {
+            foreach (Hanafuda drawn in draws)
+            {
+                drawn.Location = Location.Field;
+                field[drawn.Month].Add(drawn);
+            }
+        }
+
+        #region Subscriber
 
         /// <summary>
         /// Add new player to waiting list
         /// </summary>
         /// <param name="player"></param>
-        public virtual void AddPlayer(IHanafudaPlayer player)
+        public virtual void SubscribePlayer(IHanafudaPlayer player)
         {
             if (!IsNewPlayer(player) || playerWaitList.Remove(player))
-                new ArgumentException("Player Already Exist");
+                new ArgumentException("Can't Add: Player Already Exist");
             playerWaitList.Add(player);
         }
 
         /// <summary>
-        /// Remove player from the game
+        /// Remove player from the board
         /// </summary>
         /// <param name="player"></param>
-        public virtual void RemovePlayer(IHanafudaPlayer player)
+        public virtual void UnsubscribePlayer(IHanafudaPlayer player)
         {
             if (IsNewPlayer(player) || !playerWaitList.Remove(player))
-                new ArgumentException("Player Already Exist");
-            UnsubscribePlayer(player);
+                new ArgumentException("Can't Remove: Player Doesn't Exist");
+            RemovePlayer(player);
             playerWaitList.Remove(player);
         }
 
-        #region Subscriber
         /// <summary>
         /// Subscribe waiting player to the game
         /// </summary>
         /// <param name="player"></param>
-        protected virtual void SubscribePlayer(IHanafudaPlayer player)
+        protected virtual void AddPlayer(IHanafudaPlayer player)
         {
             if (!IsNewPlayer(player))
                 return;
             if (currentPlayer != null)
-                new ArgumentException("Game in progress");
+                new ArgumentException("Can't Join: Game in progress");
             //remove player from wait list if it exist
-            playerWaitList.Remove(player);
+            if (playerWaitList.Remove(player))
+                new ArgumentException("Unverified player joining game");
             //add to queue
             orderedPlayers.Enqueue(player);
             //add scoreBoard
             scoreBoard.Add(player, 0);
             collected.Add(player, new CollectedCards());
             //event
-            ((Player)player).CardPlayed += player_CardPlayed;
-            ((Player)player).HandEmpty += player_HandEmpty;
+            player.PrepareSpecialCollection();
             player.SubscribeSpecialEmptyEvent(collection_SpecialEmpty);
             var p = (Player)player;
             if (p != null)
@@ -131,13 +211,14 @@ namespace GoStop
                 p.CardPlayed += player_CardPlayed;
                 p.HandEmpty += player_HandEmpty;
             }
+            PlayingCount++;
         }
 
         /// <summary>
-        /// put player on the waiting list
+        /// put player back on the waiting list
         /// </summary>
         /// <param name="player"></param>
-        protected virtual void UnsubscribePlayer(IHanafudaPlayer player)
+        protected virtual void RemovePlayer(IHanafudaPlayer player)
         {
             if (IsNewPlayer(player))
                 return; // if never subscribed
@@ -158,8 +239,6 @@ namespace GoStop
             scoreBoard.Remove(player);
             collected.Remove(player);
             //event
-            ((Player)player).CardPlayed -= player_CardPlayed;
-            ((Player)player).HandEmpty -= player_HandEmpty;
             player.UnsubscribeSpecialEmptyEvent(collection_SpecialEmpty);
             var p = (Player)player;
             if (p != null)
@@ -168,11 +247,12 @@ namespace GoStop
                 p.HandEmpty -= player_HandEmpty;
             }
             playerWaitList.Add(player);
+            PlayingCount--;
         }
 
         #endregion
 
-        #region Event
+        #region fields Event
 
         public event EventHandler<FieldEventArgs> MultipleMatchFound;
 
@@ -191,8 +271,27 @@ namespace GoStop
         protected virtual void player_HandEmpty(object sender, EventArgs args)
         { }
 
+        /// <summary>
+        /// Not called on Clear()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
         protected virtual void collection_SpecialEmpty(object sender, EventArgs arg)
         { }
+        #endregion
+
+        #region PropertyChanged
+
+        public event Action NewPlayerTurn;
+        public event Action AllPlayerRemoved;
+
+        protected virtual void OnNewPlayerTurn()
+        { }
+
+        protected virtual void OnAllPlayerRemoved()
+        {
+
+        }
         #endregion
     }
 }
