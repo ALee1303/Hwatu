@@ -93,7 +93,7 @@ namespace GoStop.Collection
             }
         }
 
-        public virtual Hanafuda Draw()
+        private Hanafuda DrawCard()
         {
             if (!this)
                 return null;
@@ -101,6 +101,16 @@ namespace GoStop.Collection
             Hanafuda toReturn = cards[idx];
             cards.RemoveAt(idx);
             return toReturn;
+        }
+
+        public IEnumerable<Hanafuda> DrawCard(int amt = 1)
+        {
+            CardCollection draws = new CardCollection();
+            for (; amt > 0; amt--)
+            {
+                draws.Add(DrawCard());
+            }
+            return draws;
         }
 
         public virtual Hanafuda Peek()

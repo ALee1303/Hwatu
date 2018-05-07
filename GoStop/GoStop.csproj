@@ -61,12 +61,13 @@
     <Compile Include="Card\ChungDan.cs" />
     <Compile Include="IBoard.cs" />
     <Compile Include="Collection\FieldCollection.cs" />
+    <Compile Include="Minhwatu\MinhwatuPlayer.cs" />
     <Compile Include="MonoGameComponents\Drawables\DrawableCard.cs" />
     <Compile Include="Minhwatu\Collection\BiYak.cs" />
     <Compile Include="Minhwatu\Collection\ChoDanCollection.cs" />
     <Compile Include="Minhwatu\Collection\ChoYak.cs" />
     <Compile Include="Minhwatu\Collection\ChungDanCollection.cs" />
-    <Compile Include="Minhwatu\Collection\DanCollection.cs" />
+    <Compile Include="Minhwatu\Collection\abstract\DanCollection.cs" />
     <Compile Include="Collection\DeckCollection.cs" />
     <Compile Include="Minhwatu\Collection\HongDanCollection.cs" />
     <Compile Include="Collection\CollectedCards.cs" />
@@ -74,7 +75,7 @@
     <Compile Include="Collection\SpecialCards.cs" />
     <Compile Include="Card\SsangPi.cs" />
     <Compile Include="Card\Yul.cs" />
-    <Compile Include="Minhwatu\Collection\YakCollection.cs" />
+    <Compile Include="Minhwatu\Collection\abstract\YakCollection.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Card\abstract\Hanafuda.cs" />
     <Compile Include="Card\HongDan.cs" />

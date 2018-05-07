@@ -25,6 +25,7 @@ namespace GoStop.Collection
         private DeckCollection() : base()
         {
             Populate();
+            cards.CopyTo(reference);
         }
 
         private void Populate()
@@ -44,7 +45,6 @@ namespace GoStop.Collection
                 new Pi(Month.November), new Pi(Month.November), new SsangPi(Month.November), new Kwang(Month.November),
                 new SsangPi(Month.December), new ChoDan(Month.December), new Yul(Month.December), new Kwang(Month.December)
             };
-            cards.CopyTo(reference);
             Shuffle();
         }
         
