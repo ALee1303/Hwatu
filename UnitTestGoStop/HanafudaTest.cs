@@ -17,9 +17,9 @@ namespace UnitTestGoStop
             //no owner initially
             Assert.AreEqual(null, hanafuda.Owner);
             //initialization
-            Player player = new Player();
+            IHanafudaPlayer player = new Player();
             bool isTriggered = false;
-            Player argsPlayer = null;
+            IHanafudaPlayer argsPlayer = null;
             hanafuda.OwnerChanged += (s, e) => {
                 isTriggered = true;
                 argsPlayer = e.Owner; };

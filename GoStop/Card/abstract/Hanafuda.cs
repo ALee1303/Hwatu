@@ -18,7 +18,7 @@ namespace GoStop.Card
         private Month month;
         private CardType type;
         private Location location;
-        private bool hidden;
+        private bool revealed;
         private IHanafudaPlayer owner;
         #endregion
 
@@ -33,7 +33,7 @@ namespace GoStop.Card
         #region Properties
         public Month Month { get => month; }
         public CardType Type { get => type; }
-        public Location State
+        public Location Location
         {
             get => location;
 
@@ -46,17 +46,17 @@ namespace GoStop.Card
                 OnLocationChanged(args);
             }
         }
-        public bool Hidden
+        public bool Revealed
         {
-            get => hidden;
+            get => revealed;
 
             set
             {
-                if (hidden == value)
+                if (revealed == value)
                     return;
-                hidden = value;
+                revealed = value;
                 HanafudaEventArgs args = InitializeArgs();
-                OnHiddenChanged(args);
+                OnRevealedChanged(args);
             }
         }
         public IHanafudaPlayer Owner
@@ -68,8 +68,8 @@ namespace GoStop.Card
                 if (owner == value)
                     return;
                 owner = value;
-                HanafudaEventArgs args = InitializeArgs();
-                OnOwnerChanged(args);
+                //HanafudaEventArgs args = InitializeArgs();
+                //OnOwnerChanged(args);
             }
         }
         #endregion
@@ -79,7 +79,7 @@ namespace GoStop.Card
             HanafudaEventArgs args = new HanafudaEventArgs();
             args.Owner = owner;
             args.Location = location;
-            args.Hidden = hidden;
+            args.Revealed = revealed;
             return args;
         }
 
@@ -127,7 +127,7 @@ namespace GoStop.Card
 
         #region Events
         public event EventHandler<HanafudaEventArgs> OwnerChanged;
-        public event EventHandler<HanafudaEventArgs> HiddenChanged;
+        public event EventHandler<HanafudaEventArgs> RevealedChanged;
         public event EventHandler<HanafudaEventArgs> LocationChanged;
 
         protected virtual void OnOwnerChanged(HanafudaEventArgs args)
@@ -135,9 +135,9 @@ namespace GoStop.Card
             OwnerChanged?.Invoke(this, args);
         }
 
-        protected virtual void OnHiddenChanged(HanafudaEventArgs args)
+        protected virtual void OnRevealedChanged(HanafudaEventArgs args)
         {
-            HiddenChanged?.Invoke(this, args);
+            RevealedChanged?.Invoke(this, args);
         }
 
         protected virtual void OnLocationChanged(HanafudaEventArgs args)
@@ -151,7 +151,7 @@ namespace GoStop.Card
     public class HanafudaEventArgs : EventArgs
     {
         public IHanafudaPlayer Owner { get; set; }
-        public bool Hidden { get; set; }
+        public bool Revealed { get; set; }
         public Location Location { get; set; }
     }
 }

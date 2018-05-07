@@ -15,7 +15,7 @@ namespace GoStop.Collection
             this._points = points;
         }
         
-        public void OnCardWon(List<Hanafuda> wonCards)
+        public void OnCardsCollected(List<Hanafuda> wonCards)
         {
             foreach(Hanafuda card in wonCards)
             {

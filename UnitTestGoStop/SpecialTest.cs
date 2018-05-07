@@ -23,7 +23,7 @@ namespace UnitTestGoStop
             int point = 0;
             var collection = new Object();
             special.CollectionEmpty += (s, e) => { collection = s; point = ((SpecialEmptyEventArgs)e).Points; };
-            special.OnCardWon(
+            special.OnCardsCollected(
                 new List<Hanafuda> {
                     new SsangPi(Month.December), new ChoDan(Month.December),
                     new Yul(Month.December), new Kwang(Month.December) });
