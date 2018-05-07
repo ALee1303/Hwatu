@@ -16,7 +16,7 @@ namespace MG_Library
         KeyboardState PreviousKeyboardState { get; }
         KeyboardState CurrentKeyboardState { get; }
 
-        bool MouseCursorOver(Rectangle bound);
+        bool IsMouseOver(Rectangle bound);
         bool MouseButtonClicked(MouseButton btn);
         bool MouseButtonHeld(MouseButton btn);
         bool IsMouseButtonReleased(MouseButton btn);
@@ -79,7 +79,7 @@ namespace MG_Library
 
         #region Mouse Methods
 
-        public bool MouseCursorOver(Rectangle bound)
+        public bool IsMouseOver(Rectangle bound)
         {
             return bound.Contains(currentMouseState.X, currentMouseState.Y);
         }

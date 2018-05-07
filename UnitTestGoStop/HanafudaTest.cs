@@ -62,5 +62,16 @@ namespace UnitTestGoStop
             toCompare = new Pi(Month.April);
             Assert.AreEqual(true, hanafuda == toCompare);
         }
+
+        [TestMethod]
+        public void EnumStringParseTest()
+        {
+            string month = Month.January.ToString();
+            string type = CardType.Pi.ToString();
+            Assert.AreEqual("January", month);
+            Assert.AreEqual("Pi", type);
+            string directory = String.Join("/", Month.January, CardType.Pi);
+            Assert.AreEqual("January/Pi", directory);
+        }
     }
 }

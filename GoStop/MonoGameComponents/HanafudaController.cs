@@ -10,14 +10,15 @@ using GoStop.Card;
 
 namespace GoStop.MonoGameComponents
 {
-    internal class MonogameController : GameComponent
+    public class HanafudaController : GameComponent
     {
         private IInputManager inputManager;
-        private Hanafuda selected;
 
-        public MonogameController(Game game) : base(game)
+        public HanafudaController(Game game) : base(game)
         {
             inputManager = Game.Services.GetService<IInputManager>();
         }
+
+        
     }
 }

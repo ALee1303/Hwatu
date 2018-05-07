@@ -13,5 +13,7 @@ namespace GoStop
 
         void SubscribePlayer(IHanafudaPlayer player);
         void UnsubscribePlayer(IHanafudaPlayer player);
+
+        bool IsNewPlayer(IHanafudaPlayer player);
     }
 }

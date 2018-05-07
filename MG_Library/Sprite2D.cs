@@ -33,10 +33,11 @@ namespace MG_Library
         {
             _spriteBatch = (SpriteBatch)
                 Game.Services.GetService(typeof(SpriteBatch));
+            if (Path == null)
+                return;
             Texture = Game.Content.Load<Texture2D>(Path);
             SourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
-            UnloadContent();
         }
 
         protected override void UnloadContent()
@@ -50,6 +51,27 @@ namespace MG_Library
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Draw(Texture, Position + Origin,
+                SourceRect, Color.White * Alpha, Rotation,
+                Origin, Scale, SpriteEffects.None, 0.0f);
+        }
+
+        /// <summary>
+        /// Overload used when not added to Game.Components
+        /// </summary>
+        public virtual void Draw()
+        {
+            _spriteBatch.Draw(Texture, Position + Origin,
+                SourceRect, Color.White * Alpha, Rotation,
+                Origin, Scale, SpriteEffects.None, 0.0f);
+        }
+
+        /// <summary>
+        /// Overload for drawing on specified SpriteBatch
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Texture, Position + Origin,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }

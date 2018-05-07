@@ -36,8 +36,8 @@ namespace GoStop.Collection
             if (matches.Count > 1)
             {
 
-                FieldEventArgs args = new FieldEventArgs();
-                args.pairedCards = matches;
+                //FieldEventArgs args = new FieldEventArgs();
+                //args.pairedCards = matches;
                 //OnMultipleMatchFound(args);
             }
             cards.Remove(matches[0]);
@@ -55,10 +55,5 @@ namespace GoStop.Collection
         //}
 
 
-    }
-
-    public class FieldEventArgs : EventArgs
-    {
-        public List<Hanafuda> pairedCards { get; set; }
     }
 }

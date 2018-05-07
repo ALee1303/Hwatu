@@ -20,7 +20,9 @@ namespace GoStop.Minhwatu
         }
         
         public void TakeTurn()
-        { }
+        {
+
+        }
 
         public Task TakeTurnAsync()
         {

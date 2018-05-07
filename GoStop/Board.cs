@@ -6,6 +6,8 @@ using GoStop.Card;
 using GoStop.Collection;
 using System.Threading.Tasks;
 
+using GoStop.MonoGameComponents;
+
 namespace GoStop
 {
     public class Board : IBoard
@@ -20,6 +22,8 @@ namespace GoStop
         protected IHanafudaPlayer currentPlayer;
         protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
+
+        protected BoardManager manager;
 
         public IHanafudaPlayer CurrentPlayer
         {
@@ -58,9 +62,8 @@ namespace GoStop
             orderedPlayers = new Queue<IHanafudaPlayer>();
         }
 
-        // TODO:DealCard, FinishGame, GameResult
-        #region Protected Methods
-
+        #region Prepare Game
+        // TODO:DealCard, GameResult
         protected virtual void PrepareGame()
         {
             OrderWaitingPlayers();
@@ -75,11 +78,6 @@ namespace GoStop
                 AddPlayer(player);
         }
 
-        protected virtual void FinishGame()
-        {
-
-        }
-
         protected virtual void ResetBoard()
         {
             deck.GatherCards();
@@ -87,13 +85,6 @@ namespace GoStop
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
         }
-
-        protected bool IsNewPlayer(IHanafudaPlayer player)
-        {
-            return currentPlayer != player
-                && !orderedPlayers.Contains(player);
-        }
-
         #endregion
 
         public virtual void StartGame()
@@ -112,7 +103,8 @@ namespace GoStop
             }
             ResetBoard();
         }
-        
+
+        #region Deal Card
         /// <summary>
         /// Deal card to all waiting players
         /// Queueing them into the Game
@@ -162,6 +154,7 @@ namespace GoStop
                 field[drawn.Month].Add(drawn);
             }
         }
+        #endregion
 
         #region Subscriber
 
@@ -212,7 +205,6 @@ namespace GoStop
             var p = (Player)player;
             if (p != null)
             {
-                p.CardPlayed += player_CardPlayed;
                 p.HandEmpty += player_HandEmpty;
             }
             PlayingCount++;
@@ -247,7 +239,6 @@ namespace GoStop
             var p = (Player)player;
             if (p != null)
             {
-                p.CardPlayed -= player_CardPlayed;
                 p.HandEmpty -= player_HandEmpty;
             }
             playerWaitList.Add(player);
@@ -256,13 +247,13 @@ namespace GoStop
 
         #endregion
 
-        #region fields EventHandler
+        #region EventHandler
 
-        public event EventHandler<MatchEventArgs> MultipleMatchFound;
+        public event EventHandler<MultipleMatchEventArgs> MultipleMatch;
         
-        protected virtual void OnMultipleMatchFound(MatchEventArgs args)
+        protected virtual void OnMultipleMatch(MultipleMatchEventArgs args)
         {
-            MultipleMatchFound?.Invoke(this, args);
+            MultipleMatch?.Invoke(this, args);
         }
 
         protected virtual void player_HandEmpty(object sender, EventArgs args)
@@ -283,17 +274,25 @@ namespace GoStop
         public event Action AllPlayerRemoved;
 
         protected virtual void OnNewPlayerTurn()
-        { }
+        {
+            NewPlayerTurn?.Invoke();
+        }
 
         protected virtual void OnAllPlayerRemoved()
         {
 
         }
         #endregion
+
+        public bool IsNewPlayer(IHanafudaPlayer player)
+        {
+            return currentPlayer != player
+                && !orderedPlayers.Contains(player);
+        }
     }
 
-    public class MatchEventArgs : EventArgs
+    public class MultipleMatchEventArgs : EventArgs
     {
-        public List<Hanafuda> pairedCards { get; set; }
+        public Month Month { get; set; }
     }
 }
