@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 
 using MG_Library;
 using GoStop.Card;
+using GoStop.MonoGameComponents.Drawables;
 
 namespace GoStop.MonoGameComponents
 {
@@ -19,6 +20,17 @@ namespace GoStop.MonoGameComponents
             inputManager = Game.Services.GetService<IInputManager>();
         }
 
-        
+        public bool IsMouseOverSelectable(DrawableCard drawable)
+        {
+            Rectangle bound = drawable.Bound;
+            if (inputManager.IsMouseOver(bound))
+                return true;
+            return false;
+        }
+
+        public bool IsLeftMouseClicked()
+        {
+            return inputManager.MouseButtonClicked(MouseButton.Left);
+        }
     }
 }

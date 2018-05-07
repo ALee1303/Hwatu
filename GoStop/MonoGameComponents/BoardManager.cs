@@ -26,9 +26,11 @@ namespace GoStop.MonoGameComponents
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> handCards;
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> collectedCards;
         private List<DrawableCard> selectableCards;
+        private DrawableCard selectedCard;
 
         public IHanafudaPlayer MainPlayer { get => _mainPlayer; }
         public IHanafudaPlayer CurrentPlayer { get => _board.CurrentPlayer; }
+        public HanafudaController Controller { get => ((IMainPlayer)MainPlayer).Controller; }
 
         public Sprite2D BackImage { get => spriteFactory.BackImage; }
         public Sprite2D Outline { get => spriteFactory.Outline; }
@@ -61,11 +63,20 @@ namespace GoStop.MonoGameComponents
             _board = new MinhwatuBoard();
             ((Board)_board).AllPlayerRemoved += board_AllPlayerRemoved;
             ((Board)_board).NewPlayerTurn += board_NewPlayerTurn;
-            ((Board)_board).MultipleMatch += board_MultipleMatche;
+            ((Board)_board).MultipleMatch += board_MultipleMatch;
             if (_board.IsNewPlayer(MainPlayer))
                 AddPlayerToBoard(MainPlayer);
             InitializeDrawables();
             // TODO: add CPU
+        }
+
+        /// <summary>
+        /// Start game on board that is ready
+        /// </summary>
+        public void RestartLoadedBoard()
+        {
+            // TODO: Add case for detecting board's status and
+            // Should not work when game is in progress or Drawables are not ready.
         }
 
         private void AddPlayerToBoard(IHanafudaPlayer player)
@@ -87,6 +98,30 @@ namespace GoStop.MonoGameComponents
         public void OnExitBoard(IHanafudaPlayer player)
         {
             // TODO: for multiple players
+        }
+
+        public override void Initialize()
+        {
+            // Currently not needed
+            // being done when manually starting the game.
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (selectableCards.Count > 0)
+            {
+                OnCardSelectable();
+            }
+        }
+
+        private void OnCardSelectable()
+        {
+            foreach (DrawableCard selectable in selectableCards)
+            {
+                if (Controller.IsMouseOverSelectable(selectable) &&
+                    Controller.IsLeftMouseClicked())
+                    OnCardSelected(selectable);
+            }
         }
 
         #region Drawable Methods
@@ -123,6 +158,16 @@ namespace GoStop.MonoGameComponents
         }
         #endregion
 
+        #region Event Handler
+
+        protected virtual void OnCardSelected(DrawableCard selected)
+        {
+            selectedCard = selected;
+        }
+
+        #endregion
+
+        #region Handler Subscriber
         protected virtual void board_NewPlayerTurn()
         {
             if (CurrentPlayer is IMainPlayer)
@@ -137,12 +182,13 @@ namespace GoStop.MonoGameComponents
         }
 
 
-        protected virtual void board_MultipleMatche(object sender, MultipleMatchEventArgs args)
+        protected virtual void board_MultipleMatch(object sender, MultipleMatchEventArgs args)
         { }
 
         protected virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
         {
         }
+        #endregion
 
         #region card moving
         public void drawable_MovedToDeck(DrawableCard drawable, HanafudaEventArgs args)
@@ -209,7 +255,7 @@ namespace GoStop.MonoGameComponents
         {
             int slot = (int)month;
             int xOffSet = (slot % 6) + 1;
-            int yOffSet = (int)month < 6 ? 1 : 2;
+            int yOffSet = (slot / 6) + 1;
             Vector2 position = new Vector2(30.0f * xOffSet, 200 * yOffSet);
             return position;
         }
