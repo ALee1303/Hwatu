@@ -20,7 +20,6 @@ namespace GoStop.MonoGameComponents.Drawables
         {
             Texture = new Texture2D(Game.GraphicsDevice, 50, 81);
             Texture.SetData(new[] { Color.Red });
-            SourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
         }
 
