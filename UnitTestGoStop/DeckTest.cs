@@ -14,8 +14,8 @@ namespace UnitTestGoStop
         [TestMethod]
         public void DeckShuffleTest()
         {
-            deck = new DeckCollection();
-            DeckCollection toCompare = new DeckCollection();
+            deck = DeckCollection.Instance;
+            DeckCollection toCompare = DeckCollection.Reference;
             Assert.AreNotEqual(deck, toCompare);
         }
     }

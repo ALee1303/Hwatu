@@ -10,7 +10,7 @@ namespace GoStop.Collection
     {
         private static DeckCollection instance;
 
-        private Hanafuda[] reference;
+        private static DeckCollection reference;
 
         public static DeckCollection Instance
         {
@@ -21,11 +21,14 @@ namespace GoStop.Collection
                 return instance;
             }
         }
+        public static DeckCollection Reference { get => reference; }
 
         private DeckCollection() : base()
         {
             Populate();
-            cards.CopyTo(reference);
+            reference = new DeckCollection();
+            foreach (Hanafuda card in cards)
+                reference.Add(card);
         }
 
         private void Populate()
@@ -64,9 +67,11 @@ namespace GoStop.Collection
 
         public void GatherCards()
         {
-            this.cards = reference.ToList<Hanafuda>();
-            foreach (Hanafuda card in cards)
+            foreach (Hanafuda card in reference)
+            {
                 card.Location = Location.Deck;
+                cards.Add(card);
+            }
             Shuffle();
         }
     }
