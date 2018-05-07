@@ -21,12 +21,11 @@ namespace GoStop.Minhwatu
 
         public override void TakeTurn()
         {
-            base.TakeTurn();
         }
 
         public Task TakeTurnTask()
         {
-
+            return null;
         }
 
         public override void PrepareSpecialCollection()
