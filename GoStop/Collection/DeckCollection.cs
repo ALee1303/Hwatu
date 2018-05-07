@@ -8,14 +8,27 @@ namespace GoStop.Collection
 {
     public class DeckCollection : CardCollection
     {
-        public DeckCollection() : base()
+        private static DeckCollection instance;
+
+        private Hanafuda[] reference;
+
+        public static DeckCollection Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new DeckCollection();
+                return instance;
+            }
+        }
+
+        private DeckCollection() : base()
         {
             Populate();
         }
 
-        public void Populate()
+        private void Populate()
         {
-            Clear();
             this.cards = new List<Hanafuda>
             {
                 new Pi(Month.January), new Pi(Month.January), new HongDan(Month.January), new Kwang(Month.January),
@@ -31,9 +44,10 @@ namespace GoStop.Collection
                 new Pi(Month.November), new Pi(Month.November), new SsangPi(Month.November), new Kwang(Month.November),
                 new SsangPi(Month.December), new ChoDan(Month.December), new Yul(Month.December), new Kwang(Month.December)
             };
+            cards.CopyTo(reference);
             Shuffle();
         }
-
+        
         private void Shuffle()
         {
             Random rnd = new Random();
@@ -46,6 +60,14 @@ namespace GoStop.Collection
                 this.cards[toExc] = this.cards[i];
                 this.cards[i] = temp;
             }
+        }
+
+        public void GatherCards()
+        {
+            this.cards = reference.ToList<Hanafuda>();
+            foreach (Hanafuda card in cards)
+                card.Location = Location.Deck;
+            Shuffle();
         }
     }
 }
