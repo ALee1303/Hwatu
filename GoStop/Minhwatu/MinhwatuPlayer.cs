@@ -20,13 +20,7 @@ namespace GoStop.Minhwatu
         }
 
         public override void TakeTurn()
-        {
-        }
-
-        public Task TakeTurnTask()
-        {
-            return null;
-        }
+        { }
 
         public override void PrepareSpecialCollection()
         {

@@ -87,12 +87,20 @@ namespace GoStop
 
         public event EventHandler<CardPlayedEventArgs> CardPlayed;
         public event EventHandler<EventArgs> HandEmpty;
-
+        
+        /// <summary>
+        /// On Manager
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnCardPlayed(CardPlayedEventArgs args)
         {
             CardPlayed?.Invoke(this, args);
         }
 
+        /// <summary>
+        /// On Board
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnHandEmpty(EventArgs args)
         {
             HandEmpty?.Invoke(this, args);

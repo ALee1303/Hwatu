@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using GoStop.Card;
 using GoStop.Collection;
 
-namespace GoStop
+namespace GoStop.Minhwatu
 {
     public class MinhwatuBoard : Board
     {
@@ -19,11 +19,6 @@ namespace GoStop
             minhwatuPoints.Add(typeof(ChoDanCollection), null);
             minhwatuPoints.Add(typeof(ChungDanCollection), null);
             minhwatuPoints.Add(typeof(HongDanCollection), null);
-        }
-
-        protected override void player_CardPlayed(object sender, CardPlayedEventArgs args)
-        {
-            base.player_CardPlayed(sender, args);
         }
 
         protected override void player_HandEmpty(object sender, EventArgs args)

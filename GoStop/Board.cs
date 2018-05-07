@@ -61,7 +61,6 @@ namespace GoStop
         // TODO:DealCard, FinishGame, GameResult
         #region Protected Methods
 
-
         protected virtual void PrepareGame()
         {
             OrderWaitingPlayers();
@@ -74,6 +73,11 @@ namespace GoStop
                 new ArgumentException("Game in progress");
             foreach (IHanafudaPlayer player in playerWaitList)
                 AddPlayer(player);
+        }
+
+        protected virtual void FinishGame()
+        {
+
         }
 
         protected virtual void ResetBoard()
@@ -252,20 +256,13 @@ namespace GoStop
 
         #endregion
 
-        #region fields Event
+        #region fields EventHandler
 
-        public event EventHandler<FieldEventArgs> MultipleMatchFound;
-
-        protected virtual void OnMultipleMatchFound(FieldEventArgs args)
+        public event EventHandler<MatchEventArgs> MultipleMatchFound;
+        
+        protected virtual void OnMultipleMatchFound(MatchEventArgs args)
         {
             MultipleMatchFound?.Invoke(this, args);
-        }
-
-        protected virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
-        {
-            var player = (Player)sender;
-            if (player != currentPlayer)
-                new ArgumentException("Player playing out of turn");
         }
 
         protected virtual void player_HandEmpty(object sender, EventArgs args)
@@ -280,7 +277,7 @@ namespace GoStop
         { }
         #endregion
 
-        #region PropertyChanged
+        #region Notify Board of Property Change
 
         public event Action NewPlayerTurn;
         public event Action AllPlayerRemoved;
@@ -293,5 +290,10 @@ namespace GoStop
 
         }
         #endregion
+    }
+
+    public class MatchEventArgs : EventArgs
+    {
+        public List<Hanafuda> pairedCards { get; set; }
     }
 }
