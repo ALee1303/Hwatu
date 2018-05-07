@@ -27,6 +27,7 @@ namespace GoStop.MonoGameComponents
             //setup gallery
             spriteGallery = new Dictionary<string, Sprite2D>();
             SetUpGallery();
+            backImage = new BackImage(Game);
         }
 
         public DrawableCard ReturnPairedDrawable(Hanafuda card)
@@ -84,10 +85,10 @@ namespace GoStop.MonoGameComponents
                         return false;
                     break;
                 case CardType.Kwang:
-                    if (month != Month.January ||
-                        month != Month.March ||
-                        month != Month.August ||
-                        month != Month.November ||
+                    if (month != Month.January &&
+                        month != Month.March &&
+                        month != Month.August &&
+                        month != Month.November &&
                         month != Month.December)
                         return false;
                     break;

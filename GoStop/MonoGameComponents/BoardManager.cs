@@ -10,15 +10,16 @@ using GoStop;
 using GoStop.Card;
 using GoStop.Minhwatu;
 using GoStop.MonoGameComponents.Drawables;
+using GoStop.Collection;
 
 namespace GoStop.MonoGameComponents
 {
     // TODO: separate into multiple types of board for GoStop and Minhwatu
     // Currently only supports Minhwatu 1p 1v1 with CPU
-    public class BoardManager : GameComponent
+    public class BoardManager : DrawableGameComponent
     {
         private IBoard _board;
-        private IHanafudaPlayer _mainPlayer;
+        private IMainPlayer _mainPlayer;
 
         private CardFactory spriteFactory;
         private List<DrawableCard> deckCards;
@@ -28,7 +29,7 @@ namespace GoStop.MonoGameComponents
         private List<DrawableCard> selectableCards;
         private DrawableCard selectedCard;
 
-        public IHanafudaPlayer MainPlayer { get => _mainPlayer; }
+        public IMainPlayer MainPlayer { get => _mainPlayer; }
         public IHanafudaPlayer CurrentPlayer { get => _board.CurrentPlayer; }
         public HanafudaController Controller { get => ((IMainPlayer)MainPlayer).Controller; }
 
@@ -67,7 +68,7 @@ namespace GoStop.MonoGameComponents
             if (_board.IsNewPlayer(MainPlayer))
                 AddPlayerToBoard(MainPlayer);
             InitializeDrawables();
-            // TODO: add CPU
+            _board.StartGame();
         }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace GoStop.MonoGameComponents
         public void OnJoinBoard(IHanafudaPlayer player)
         {
             if (player is IMainPlayer)
-                _mainPlayer = player;
+                _mainPlayer = (IMainPlayer)player;
             if (_board != null)
                 AddPlayerToBoard(player);
         }
@@ -100,29 +101,72 @@ namespace GoStop.MonoGameComponents
             // TODO: for multiple players
         }
 
-        public override void Initialize()
-        {
-            // Currently not needed
-            // being done when manually starting the game.
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (selectableCards.Count > 0)
-            {
-                OnCardSelectable();
-            }
-        }
-
-        private void OnCardSelectable()
+        private void CardSelectable()
         {
             foreach (DrawableCard selectable in selectableCards)
             {
+                // TODO: Mouseover highlight logic
                 if (Controller.IsMouseOverSelectable(selectable) &&
                     Controller.IsLeftMouseClicked())
                     OnCardSelected(selectable);
             }
         }
+
+        protected virtual void OnCardSelected(DrawableCard selected)
+        {
+            selectedCard = selected;
+        }
+
+        #region GameComponent
+        
+        public override void Update(GameTime gameTime)
+        {
+            
+            if (selectableCards.Count > 0)
+                CardSelectable();
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            DrawHands();
+            // TODO: Location Logic for Collected
+            DrawCollected();
+            DrawField();
+        }
+
+        private void DrawHands()
+        {
+            handCards.Keys.ToList().ForEach(key => handCards[key].ForEach(
+                card => card.Draw()));
+            //foreach (KeyValuePair<IHanafudaPlayer, List<DrawableCard>> entry in handCards)
+            //{
+            //    foreach (DrawableCard card in entry.Value)
+            //    {
+            //        card.Draw();
+            //    }
+            //}
+        }
+
+        private void DrawCollected()
+        {
+            collectedCards.Keys.ToList().ForEach(key => collectedCards[key].ForEach(
+                card => card.Draw()));
+            //foreach (KeyValuePair<IHanafudaPlayer, List<DrawableCard>> entry in collectedCards)
+            //{
+            //    foreach (DrawableCard card in entry.Value)
+            //    {
+            //        card.Draw();
+            //    }
+            //}
+        }
+
+        private void DrawField()
+        {
+            fieldCards.Keys.ToList().ForEach(key => fieldCards[key].ForEach(
+                card => card.Draw()));
+        }
+
+        #endregion
 
         #region Drawable Methods
         /// <summary>
@@ -141,12 +185,13 @@ namespace GoStop.MonoGameComponents
         /// </summary>
         private void InitializeDrawables()
         {
-            foreach (Hanafuda card in _board.Deck)
+            foreach (Hanafuda card in DeckCollection.Instance)
             {
                 DrawableCard drawable = spriteFactory.ReturnPairedDrawable(card);
                 drawable.Initialize();
                 deckCards.Add(drawable);
             }
+            spriteFactory.BackImage.Initialize();
         }
 
         private void DiscardDrawables()
@@ -159,11 +204,6 @@ namespace GoStop.MonoGameComponents
         #endregion
 
         #region Event Handler
-
-        protected virtual void OnCardSelected(DrawableCard selected)
-        {
-            selectedCard = selected;
-        }
 
         #endregion
 
@@ -183,7 +223,9 @@ namespace GoStop.MonoGameComponents
 
 
         protected virtual void board_MultipleMatch(object sender, MultipleMatchEventArgs args)
-        { }
+        {
+
+        }
 
         protected virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
         {
@@ -243,11 +285,11 @@ namespace GoStop.MonoGameComponents
         public Vector2 GetHandLocation(IHanafudaPlayer owner)
         {
             int slot = handCards[owner].Count;
-            Vector2 position = new Vector2(25.0f * slot, 41.0f * slot);
-            position.Y += 10;
-            position.X += 5 * slot;
+            Vector2 position = new Vector2(60.0f * slot, 81.0f);
+            position.Y -= 30;
+            position.X -= (5) * slot;
             if (owner == MainPlayer)
-                position.Y += 900;
+                position.Y += 400;
             return position;
         }
 
@@ -256,7 +298,9 @@ namespace GoStop.MonoGameComponents
             int slot = (int)month;
             int xOffSet = (slot % 6) + 1;
             int yOffSet = (slot / 6) + 1;
-            Vector2 position = new Vector2(30.0f * xOffSet, 200 * yOffSet);
+            Vector2 position = new Vector2(100.0f * xOffSet, 100 * yOffSet);
+            position.X = position.X + ((fieldCards[month].Count - 1) * 10) - (5 * xOffSet);
+            position.Y += 150;
             return position;
         }
         #endregion

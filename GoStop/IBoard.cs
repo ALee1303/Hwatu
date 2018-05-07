@@ -6,7 +6,6 @@ namespace GoStop
     {
         IHanafudaPlayer CurrentPlayer { get; }
         int PlayingCount { get; }
-        Collection.DeckCollection Deck { get; }
 
         void StartGame();
         void EndGame();

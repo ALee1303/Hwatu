@@ -14,7 +14,6 @@ namespace GoStop
     {
         private int playingCount;
         //cards
-        protected DeckCollection deck;
         protected Dictionary<Month, CardCollection> field;
         protected Dictionary<IHanafudaPlayer, CollectedCards> collected;
         protected Dictionary<IHanafudaPlayer, int> scoreBoard;
@@ -50,16 +49,23 @@ namespace GoStop
                     OnAllPlayerRemoved();
             }
         }
-        public DeckCollection Deck { get => deck; }
 
         public Board()
         {
-            deck = DeckCollection.Instance;
             field = new Dictionary<Month, CardCollection>();
+            InitializeField();
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
             playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
+        }
+
+        private void InitializeField()
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                field.Add((Month)i, new CardCollection());
+            }
         }
 
         #region Prepare Game
@@ -76,11 +82,12 @@ namespace GoStop
                 new ArgumentException("Game in progress");
             foreach (IHanafudaPlayer player in playerWaitList)
                 AddPlayer(player);
+            playerWaitList.Clear();
         }
 
         protected virtual void ResetBoard()
         {
-            deck.GatherCards();
+            DeckCollection.Instance.GatherCards();
             field.Clear();
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
@@ -127,7 +134,7 @@ namespace GoStop
         /// <param name="amount">2p = 5, 3p = 4 then 3</param>
         private void DealCard(IHanafudaPlayer player, int amount = 5)
         {
-            IEnumerable<Hanafuda> draws = deck.DrawCard(amount);
+            IEnumerable<Hanafuda> draws = DeckCollection.Instance.DrawCard(amount);
             foreach (Hanafuda drawn in draws)
             {
                 drawn.Owner = player;
@@ -142,7 +149,7 @@ namespace GoStop
         /// <param name="amount">2p = 4, 3p = 3</param>
         protected void DealCardsOnField(int amount = 4)
         {
-            IEnumerable<Hanafuda> draws = deck.DrawCard(amount);
+            IEnumerable<Hanafuda> draws = DeckCollection.Instance.DrawCard(amount);
             OrganizeField(draws);
         }
 
@@ -191,9 +198,6 @@ namespace GoStop
                 return;
             if (currentPlayer != null)
                 new ArgumentException("Can't Join: Game in progress");
-            //remove player from wait list if it exist
-            if (playerWaitList.Remove(player))
-                new ArgumentException("Unverified player joining game");
             //add to queue
             orderedPlayers.Enqueue(player);
             //add scoreBoard

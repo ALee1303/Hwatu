@@ -19,7 +19,9 @@ namespace GoStop.MonoGameComponents.Drawables
         protected override void LoadContent()
         {
             Texture = new Texture2D(Game.GraphicsDevice, 50, 81);
-            Texture.SetData(new[] { Color.Red });
+            Color[] data = new Color[50 * 81];
+            for (int i = 0; i < data.Length; ++i) data[i] = Color.Red;
+            Texture.SetData(data);
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
         }
 

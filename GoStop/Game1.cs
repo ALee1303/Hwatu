@@ -2,7 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using GoStop.Screen;
+using GoStop;
+using GoStop.Card;
+using GoStop.Collection;
+using GoStop.MonoGameComponents;
+using GoStop.Minhwatu;
+using MG_Library;
 
 namespace GoStop
 {
@@ -14,11 +19,22 @@ namespace GoStop
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        BoardManager boardManager;
+        IHanafudaPlayer mainPlayer;
+        IHanafudaPlayer cpu;
+
         public Game1()
         {
+            InputManager input = new InputManager(this);
+            this.Services.AddService(input);
             graphics = new GraphicsDeviceManager(this);
-
             Content.RootDirectory = "Content";
+            boardManager = new BoardManager(this);
+            mainPlayer = new MainMinhwatuPlayer(this);
+            mainPlayer.JoinBoard(boardManager);
+            cpu = new MinhwatuPlayer();
+            cpu.JoinBoard(boardManager);
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -52,6 +68,12 @@ namespace GoStop
             // TODO: Unload any non ContentManager content here
         }
 
+        protected override void BeginRun()
+        {
+            Components.Add(boardManager);
+            boardManager.StartMinhwatuGameVsCPU();
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -76,8 +98,9 @@ namespace GoStop
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+            spriteBatch.Begin();
             base.Draw(gameTime);
+            spriteBatch.End();
         }
     }
 }

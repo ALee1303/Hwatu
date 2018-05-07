@@ -17,7 +17,7 @@ namespace GoStop.MonoGameComponents
 
         public HanafudaController(Game game) : base(game)
         {
-            inputManager = Game.Services.GetService<IInputManager>();
+            inputManager = Game.Services.GetService<InputManager>();
         }
 
         public bool IsMouseOverSelectable(DrawableCard drawable)

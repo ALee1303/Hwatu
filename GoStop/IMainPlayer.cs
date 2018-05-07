@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoStop
 {
-    public interface IMainPlayer
+    public interface IMainPlayer : IHanafudaPlayer
     {
         MonoGameComponents.HanafudaController Controller { get; }
 

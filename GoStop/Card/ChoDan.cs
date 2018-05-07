@@ -10,7 +10,7 @@ namespace GoStop.Card
     {
         public ChoDan(Month _month) : base(_month, TtiType.Cho)
         {
-            if (_month != Month.April || _month != Month.May || _month != Month.July)
+            if (_month != Month.April && _month != Month.May && _month != Month.July)
                 new ArgumentException("Invalid Card Type");
         }
     }
