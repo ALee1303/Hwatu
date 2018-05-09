@@ -32,15 +32,19 @@ namespace GoStop.MonoGameComponents
 
         public DrawableCard ReturnPairedDrawable(Hanafuda card)
         {
-            string idx = StringParseCard(card.Month, card.Type);
+            string idx = StringParseCardType(card.Month, card.Type);
+            if (card is Pi)
+                idx += ((Pi)card).PiCount;
             Sprite2D image = spriteGallery[idx];
             return new DrawableCard(Game, card, image);
         }
         
-        private string StringParseCard(Month month, CardType type)
+        private string StringParseCardType(Month month, CardType type)
         {
             return String.Join("/", month, type);
         }
+
+        #region Gallery SetUp
 
         private void SetUpGallery()
         {
@@ -52,49 +56,73 @@ namespace GoStop.MonoGameComponents
                 month = (Month)i;
                 for (int j = 0; j < 4; j++)
                 {
-                    type = (CardType)j;
-                    if (!IsPossibleCard(month, type))
-                        continue;
-                    path = StringParseCard(month, type);
-                    // in case of SsangPi
-                    // TODO: change SSangPi logic later
-                    if (month == Month.December &&
-                        type == CardType.Pi)
-                    {
-                        spriteGallery.Add(path, new Sprite2D(Game, "December/SsangPi"));
-                        continue;
-                    }
+                    int slot = j + 1;
+                    type = PossibleCard(month, slot);
+                    path = StringParseCardType(month, type);
+                    if (type == CardType.Pi)
+                        path += slot.ToString();
                     spriteGallery.Add(path, new Sprite2D(Game, path));
                 }
             }
         }
 
-        private bool IsPossibleCard(Month month, CardType type)
+        private CardType PossibleCard(Month month, int slot)
         {
-            switch (type)
+            CardType type = CardType.Pi;
+            switch (month)
             {
-                case CardType.Tti:
-                    if (month == Month.August ||
-                        month == Month.November)
-                        return false;
+                case Month.January:
+                case Month.March:
+                    if (slot == 1 || slot == 2)
+                        type = CardType.Pi;
+                    if (slot == 3)
+                        type = CardType.Tti;
+                    if (slot == 4)
+                        type = CardType.Kwang;
                     break;
-                case CardType.Yul:
-                    if (month == Month.January ||
-                        month == Month.March ||
-                        month == Month.November)
-                        return false;
+                case Month.February:
+                case Month.April:
+                case Month.May:
+                case Month.June:
+                case Month.July:
+                case Month.September:
+                case Month.October:
+                    if (slot == 1 || slot == 2)
+                        type = CardType.Pi;
+                    if (slot == 3)
+                        type = CardType.Tti;
+                    if (slot == 4)
+                        type = CardType.Yul;
                     break;
-                case CardType.Kwang:
-                    if (month != Month.January &&
-                        month != Month.March &&
-                        month != Month.August &&
-                        month != Month.November &&
-                        month != Month.December)
-                        return false;
+                case Month.August:
+                    if (slot == 1 || slot == 2)
+                        type = CardType.Pi;
+                    if (slot == 3)
+                        type = CardType.Yul;
+                    if (slot == 4)
+                        type = CardType.Kwang;
+                    break;
+                case Month.November:
+                    if (slot == 1 || slot == 2)
+                        type = CardType.Pi;
+                    if (slot == 3)
+                        type = CardType.SsangPi;
+                    if (slot == 4)
+                        type = CardType.Kwang;
+                    break;
+                case Month.December:
+                    if (slot == 1)
+                        type = CardType.SsangPi;
+                    if (slot == 2)
+                        type = CardType.Tti;
+                    if (slot == 3)
+                        type = CardType.Yul;
+                    if (slot == 4)
+                        type = CardType.Kwang;
                     break;
             }
-            return true;
+            return type;
         }
-
+        #endregion
     }
 }

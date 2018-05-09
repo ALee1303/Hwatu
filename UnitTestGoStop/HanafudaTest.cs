@@ -56,10 +56,10 @@ namespace UnitTestGoStop
         [TestMethod]
         public void PiEquals()
         {
-            hanafuda = new Pi(Month.April);
+            hanafuda = new Pi(Month.April, 1);
             Hanafuda toCompare = new SsangPi(Month.April);
             Assert.AreEqual(false, hanafuda == toCompare);
-            toCompare = new Pi(Month.April);
+            toCompare = new Pi(Month.April, 1);
             Assert.AreEqual(true, hanafuda == toCompare);
         }
 

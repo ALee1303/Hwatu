@@ -8,7 +8,7 @@ namespace GoStop.Card
         May, June, July, August, September,
         October, November, December
     }
-    public enum CardType { Pi, Tti, Yul, Kwang }
+    public enum CardType { Pi, Tti, Yul, Kwang, SsangPi }
     public enum Location { Deck, Field, Hand, Collected }
 
     // TODO: add IHanafuda interface

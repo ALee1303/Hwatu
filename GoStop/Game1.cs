@@ -21,7 +21,6 @@ namespace GoStop
 
         BoardManager boardManager;
         IHanafudaPlayer mainPlayer;
-        IHanafudaPlayer cpu;
 
         public Game1()
         {
@@ -32,8 +31,6 @@ namespace GoStop
             boardManager = new BoardManager(this);
             mainPlayer = new MainMinhwatuPlayer(this);
             mainPlayer.JoinBoard(boardManager);
-            cpu = new MinhwatuPlayer();
-            cpu.JoinBoard(boardManager);
             this.IsMouseVisible = true;
         }
 

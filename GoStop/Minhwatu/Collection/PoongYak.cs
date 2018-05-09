@@ -6,8 +6,8 @@ namespace GoStop.Collection
     {
         public PoongYak(Player owner) : base(owner)
         {
-            cards.Add(new Pi(Month.October));
-            cards.Add(new Pi(Month.October));
+            cards.Add(new Pi(Month.October, 1));
+            cards.Add(new Pi(Month.October, 2));
             cards.Add(new ChungDan(Month.October));
             cards.Add(new Yul(Month.October));
             cards.TrimExcess();

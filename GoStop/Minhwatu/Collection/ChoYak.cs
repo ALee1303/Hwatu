@@ -6,8 +6,8 @@ namespace GoStop.Collection
     {
         public ChoYak(Player owner) : base(owner)
         {
-            cards.Add(new Pi(Month.May));
-            cards.Add(new Pi(Month.May));
+            cards.Add(new Pi(Month.May, 1));
+            cards.Add(new Pi(Month.May, 2));
             cards.Add(new ChoDan(Month.May));
             cards.Add(new Yul(Month.May));
             cards.TrimExcess();

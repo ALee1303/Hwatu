@@ -138,26 +138,12 @@ namespace GoStop.MonoGameComponents
         {
             handCards.Keys.ToList().ForEach(key => handCards[key].ForEach(
                 card => card.Draw()));
-            //foreach (KeyValuePair<IHanafudaPlayer, List<DrawableCard>> entry in handCards)
-            //{
-            //    foreach (DrawableCard card in entry.Value)
-            //    {
-            //        card.Draw();
-            //    }
-            //}
         }
 
         private void DrawCollected()
         {
             collectedCards.Keys.ToList().ForEach(key => collectedCards[key].ForEach(
                 card => card.Draw()));
-            //foreach (KeyValuePair<IHanafudaPlayer, List<DrawableCard>> entry in collectedCards)
-            //{
-            //    foreach (DrawableCard card in entry.Value)
-            //    {
-            //        card.Draw();
-            //    }
-            //}
         }
 
         private void DrawField()
@@ -191,7 +177,7 @@ namespace GoStop.MonoGameComponents
                 drawable.Initialize();
                 deckCards.Add(drawable);
             }
-            spriteFactory.BackImage.Initialize();
+            // TODO: backImg initialization
         }
 
         private void DiscardDrawables()

@@ -39,10 +39,6 @@ namespace GoStop.Collection
         /// </summary>
         public void Add(Pi item)
         {
-            if (item is SsangPi) // Saang pi follows same rule as other: one per month if they exist
-                Add((Hanafuda)item); // cast and call normal add
-            // special rule applies for regular Pi
-            // there can be only 2 Pi in each month
             int count = 0;
             foreach (Pi pi in cards)
                 if (pi == item)
