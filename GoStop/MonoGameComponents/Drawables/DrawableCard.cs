@@ -16,17 +16,7 @@ namespace GoStop.MonoGameComponents.Drawables
         private BoardManager _manager;
         private Hanafuda _card;
         private Vector2 position, scale;
-        private Sprite2D _frontImage;
-        public Sprite2D CurrentImage
-        {
-            get
-            {
-                if (Revealed)
-                    return _frontImage;
-                else
-                    return _manager.BackImage;
-            }
-        }
+        private Sprite2D cardImage;
         public Sprite2D Outline { get => _manager.Outline; }
         public bool Revealed { get => _card.Revealed; }
         public Vector2 Position
@@ -37,7 +27,7 @@ namespace GoStop.MonoGameComponents.Drawables
                 if (position == value)
                     return;
                 position = value;
-                _frontImage.Position = value;
+                cardImage.Position = value;
             }
         }
         public Vector2 Scale
@@ -48,10 +38,10 @@ namespace GoStop.MonoGameComponents.Drawables
                 if (scale == value)
                     return;
                 scale = value;
-                _frontImage.Scale = value;
+                cardImage.Scale = value;
             }
         }
-        public Rectangle Bound { get => _frontImage.BoundingRect; }
+        public Rectangle Bound { get => cardImage.BoundingRect; }
         public Hanafuda Card { get => _card; }
         
         public DrawableCard(Game game, Hanafuda card, Sprite2D image) : base(game)
@@ -61,7 +51,7 @@ namespace GoStop.MonoGameComponents.Drawables
             //_card.OwnerChanged += card_OwnerChanged;
             //_card.RevealedChanged += card_RevealedChanged;
             _card.LocationChanged += card_LocationChanged;
-            _frontImage = image;
+            cardImage = image;
         }
 
         #region Drawable Override
@@ -73,7 +63,7 @@ namespace GoStop.MonoGameComponents.Drawables
 
         protected override void LoadContent()
         {
-            _frontImage.Initialize();
+            cardImage.Initialize();
         }
         
         protected override void UnloadContent()
@@ -85,7 +75,7 @@ namespace GoStop.MonoGameComponents.Drawables
 
         public virtual void Draw()
         {
-            CurrentImage.Draw();
+            cardImage.Draw();
         }
 
         /// <summary>

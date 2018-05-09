@@ -15,10 +15,10 @@ namespace GoStop.MonoGameComponents
     public class CardFactory : GameComponent
     {
         private Dictionary<string, Sprite2D> spriteGallery;
-        private Sprite2D backImage, outline;
+        private Queue<BackImage> backImages;
+        private Sprite2D outline;
         private BoardManager manager;
-
-        public Sprite2D BackImage { get => backImage; }
+        
         public Sprite2D Outline { get => outline; }
 
         public CardFactory(Game game) : base(game)
@@ -26,8 +26,7 @@ namespace GoStop.MonoGameComponents
             manager = Game.Services.GetService<BoardManager>();
             //setup gallery
             spriteGallery = new Dictionary<string, Sprite2D>();
-            SetUpGallery();
-            backImage = new BackImage(Game);
+            backImages = new Queue<BackImage>();
         }
 
         public DrawableCard ReturnPairedDrawable(Hanafuda card)
@@ -38,10 +37,21 @@ namespace GoStop.MonoGameComponents
             Sprite2D image = spriteGallery[idx];
             return new DrawableCard(Game, card, image);
         }
+        public DrawableCard ReturnTurnedDrawable(Hanafuda card)
+        {
+            Sprite2D back = GetBackImage();
+            return new DrawableCard(Game, card, back);
+        }
         
         private string StringParseCardType(Month month, CardType type)
         {
             return String.Join("/", month, type);
+        }
+
+        public override void Initialize()
+        {
+            SetUpGallery();
+            spriteGallery.Keys.ToList().ForEach(key => spriteGallery[key].Initialize());
         }
 
         #region Gallery SetUp
@@ -123,6 +133,18 @@ namespace GoStop.MonoGameComponents
             }
             return type;
         }
+        #endregion
+
+        #region BackImage Setup
+
+        private BackImage GetBackImage()
+        {
+            if (backImages.Count < 1)
+                return new BackImage(Game);
+            else
+                return backImages.Dequeue();
+        }
+
         #endregion
     }
 }

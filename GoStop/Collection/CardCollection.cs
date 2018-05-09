@@ -34,21 +34,6 @@ namespace GoStop.Collection
                 new ArgumentException("Card is already contained");
         }
 
-        /// <summary>
-        /// overload Add() for Pi. there can be 2 Pi of each type
-        /// </summary>
-        public void Add(Pi item)
-        {
-            int count = 0;
-            foreach (Pi pi in cards)
-                if (pi == item)
-                    count++;
-            if (count < 2) // if theres only one or no Pi
-                cards.Add(item);
-            else
-                new ArgumentException("Pi is already contained");
-        }
-
         public void Add(IEnumerable<Hanafuda> items)
         {
             var enumerator = items.GetEnumerator();

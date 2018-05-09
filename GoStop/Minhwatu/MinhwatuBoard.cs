@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using GoStop.Card;
+using GoStop.MonoGameComponents;
 using GoStop.Collection;
 
 namespace GoStop.Minhwatu
@@ -10,7 +10,7 @@ namespace GoStop.Minhwatu
     {
         private Dictionary<Type, Player> minhwatuPoints;
 
-        public MinhwatuBoard() : base()
+        public MinhwatuBoard(BoardManager manager) : base(manager)
         {
             minhwatuPoints = new Dictionary<Type, Player>(6);
             minhwatuPoints.Add(typeof(ChoYak), null);

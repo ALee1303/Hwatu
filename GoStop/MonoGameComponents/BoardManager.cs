@@ -21,7 +21,7 @@ namespace GoStop.MonoGameComponents
         private IBoard _board;
         private IMainPlayer _mainPlayer;
 
-        private CardFactory spriteFactory;
+        private CardFactory cardFactory;
         private List<DrawableCard> deckCards;
         private Dictionary<Month, List<DrawableCard>> fieldCards;
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> handCards;
@@ -32,14 +32,13 @@ namespace GoStop.MonoGameComponents
         public IMainPlayer MainPlayer { get => _mainPlayer; }
         public IHanafudaPlayer CurrentPlayer { get => _board.CurrentPlayer; }
         public HanafudaController Controller { get => ((IMainPlayer)MainPlayer).Controller; }
-
-        public Sprite2D BackImage { get => spriteFactory.BackImage; }
-        public Sprite2D Outline { get => spriteFactory.Outline; }
+        
+        public Sprite2D Outline { get => cardFactory.Outline; }
 
         public BoardManager(Game game) : base(game)
         {
             Game.Services.AddService<BoardManager>(this);
-            spriteFactory = new CardFactory(Game);
+            cardFactory = new CardFactory(Game);
             deckCards = new List<DrawableCard>();
             fieldCards = new Dictionary<Month, List<DrawableCard>>();
             SetupField();
@@ -61,13 +60,12 @@ namespace GoStop.MonoGameComponents
         {
             if (_board != null)
                 new ArgumentException("Must Unsubscribe Board first");
-            _board = new MinhwatuBoard();
-            ((Board)_board).AllPlayerRemoved += board_AllPlayerRemoved;
-            ((Board)_board).NewPlayerTurn += board_NewPlayerTurn;
-            ((Board)_board).MultipleMatch += board_MultipleMatch;
+            _board = new MinhwatuBoard(this);
+            SubscribeToLoadedBoard();
             if (_board.IsNewPlayer(MainPlayer))
                 AddPlayerToBoard(MainPlayer);
-            InitializeDrawables();
+            MinhwatuPlayer cpu = new MinhwatuPlayer();
+            AddPlayerToBoard(cpu);
             _board.StartGame();
         }
 
@@ -79,6 +77,17 @@ namespace GoStop.MonoGameComponents
             // TODO: Add case for detecting board's status and
             // Should not work when game is in progress or Drawables are not ready.
         }
+
+        private void SubscribeToLoadedBoard()
+        {
+            Board board = (Board)_board;
+            board.NewPlayerTurn += board_NewPlayerTurn;
+            board.AllPlayerRemoved += board_AllPlayerRemoved;
+            board.CardsDealt += board_CardsDealt;
+            board.CardsOnField += board_CardsOnField;
+            board.MultipleMatch += board_MultipleMatch;
+        }
+
 
         private void AddPlayerToBoard(IHanafudaPlayer player)
         {
@@ -118,10 +127,16 @@ namespace GoStop.MonoGameComponents
         }
 
         #region GameComponent
-        
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            cardFactory.Initialize();
+        }
+
         public override void Update(GameTime gameTime)
         {
-            
+
             if (selectableCards.Count > 0)
                 CardSelectable();
         }
@@ -159,25 +174,38 @@ namespace GoStop.MonoGameComponents
         /// Reorder deck for new game
         /// </summary>
         /// TODO: sort without creating new Drawable
-        private void ResetDrawables()
+        private void ResetLoadedBoard()
         {
             DiscardDrawables();
-            InitializeDrawables();
+            _board.ResetBoard();
         }
 
         /// <summary>
         /// Initialize drawables
         /// Called right before every game when all cards are in deck
         /// </summary>
-        private void InitializeDrawables()
+        private IEnumerable<DrawableCard> InitializeRevealedDrawables(IEnumerable<Hanafuda> hanafudas)
         {
-            foreach (Hanafuda card in DeckCollection.Instance)
+            List<DrawableCard> drawables = new List<DrawableCard>();
+            foreach (Hanafuda card in hanafudas)
             {
-                DrawableCard drawable = spriteFactory.ReturnPairedDrawable(card);
+                DrawableCard drawable = cardFactory.ReturnPairedDrawable(card);
                 drawable.Initialize();
-                deckCards.Add(drawable);
+                drawables.Add(drawable);
             }
-            // TODO: backImg initialization
+            return drawables;
+        }
+
+        private IEnumerable<DrawableCard> InitializeTurnedDrawables(IEnumerable<Hanafuda> hanafudas)
+        {
+            List<DrawableCard> drawables = new List<DrawableCard>();
+            foreach (Hanafuda card in hanafudas)
+            {
+                DrawableCard turnedCard = cardFactory.ReturnTurnedDrawable(card);
+                turnedCard.Initialize();
+                drawables.Add(turnedCard);
+            }
+            return drawables;
         }
 
         private void DiscardDrawables()
@@ -189,11 +217,9 @@ namespace GoStop.MonoGameComponents
         }
         #endregion
 
-        #region Event Handler
+        #region Board Interaction
 
-        #endregion
 
-        #region Handler Subscriber
         protected virtual void board_NewPlayerTurn()
         {
             if (CurrentPlayer is IMainPlayer)
@@ -201,10 +227,34 @@ namespace GoStop.MonoGameComponents
             // TODO input logic
         }
 
+        protected virtual void board_CardsDealt(object sender, DealCardEventArgs args)
+        {
+            IEnumerable<Hanafuda> cards = args.Cards;
+            IHanafudaPlayer owner = args.Player;
+            IEnumerable<DrawableCard> returnedDrawables = new List<DrawableCard>();
+            if (owner == MainPlayer)
+                returnedDrawables = InitializeRevealedDrawables(cards);
+            else
+                returnedDrawables = InitializeTurnedDrawables(cards);
+            foreach (DrawableCard drawable in returnedDrawables)
+            {
+                PlaceCardOnHand(owner, drawable);
+            }
+        }
+
+        protected virtual void board_CardsOnField(object sender, DealCardEventArgs args)
+        {
+            IEnumerable<Hanafuda> cards = args.Cards;
+            IEnumerable<DrawableCard> returnedDrawables = InitializeRevealedDrawables(cards);
+            foreach (DrawableCard drawable in returnedDrawables)
+            {
+                PlaceCardOnField(drawable);
+            }
+        }
+
         protected virtual void board_AllPlayerRemoved()
         {
-            ResetDrawables();
-            // TODO: replay button
+            // TODO: Displaying result and ending game, replay button
         }
 
 
@@ -213,12 +263,17 @@ namespace GoStop.MonoGameComponents
 
         }
 
+        #endregion
+
+
+        #region Player EventHandler Subscriber
         protected virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
         {
         }
         #endregion
 
-        #region card moving
+        #region Drawable events
+
         public void drawable_MovedToDeck(DrawableCard drawable, HanafudaEventArgs args)
         {
             IHanafudaPlayer owner = args.Owner;
@@ -267,16 +322,32 @@ namespace GoStop.MonoGameComponents
             drawable.Position = GetFieldLocation(idx);
         }
 
+        #endregion
+
+        #region Location Methods
+
+        private void PlaceCardOnHand(IHanafudaPlayer owner, DrawableCard card)
+        {
+            card.Position = GetHandLocation(owner);
+            handCards[owner].Add(card);
+        }
+
         /// Hardcoded for test screen
         public Vector2 GetHandLocation(IHanafudaPlayer owner)
         {
-            int slot = handCards[owner].Count;
+            int slot = handCards[owner].Count + 1;
             Vector2 position = new Vector2(60.0f * slot, 81.0f);
             position.Y -= 30;
             position.X -= (5) * slot;
             if (owner == MainPlayer)
                 position.Y += 400;
             return position;
+        }
+
+        public void PlaceCardOnField(DrawableCard drawable)
+        {
+            Month month = drawable.Card.Month;
+            drawable.Position = GetFieldLocation(month);
         }
 
         public Vector2 GetFieldLocation(Month month)

@@ -39,13 +39,13 @@ namespace GoStop.Collection
                 new Pi(Month.February, 1), new Pi(Month.February,2), new HongDan(Month.February), new Yul(Month.February),
                 new Pi(Month.March,1), new Pi(Month.March,2), new HongDan(Month.March), new Kwang(Month.March),
                 new Pi(Month.April,1), new Pi(Month.April,2), new ChoDan(Month.April), new Yul(Month.April),
-                new Pi(Month.May,1), new Pi(Month.May,1), new ChoDan(Month.May), new Yul(Month.May),
-                new Pi(Month.June,1), new Pi(Month.June,1), new ChungDan(Month.June), new Yul(Month.June),
-                new Pi(Month.July,1), new Pi(Month.July,1), new ChoDan(Month.July), new Yul(Month.July),
-                new Pi(Month.August,1), new Pi(Month.August,1), new Yul(Month.August), new Kwang(Month.August),
-                new Pi(Month.September,1), new Pi(Month.September,1), new ChungDan(Month.September), new Yul(Month.September),
-                new Pi(Month.October,1), new Pi(Month.October,1), new ChungDan(Month.October), new Yul(Month.October),
-                new Pi(Month.November,1), new Pi(Month.November,1), new SsangPi(Month.November), new Kwang(Month.November),
+                new Pi(Month.May,1), new Pi(Month.May,2), new ChoDan(Month.May), new Yul(Month.May),
+                new Pi(Month.June,1), new Pi(Month.June,2), new ChungDan(Month.June), new Yul(Month.June),
+                new Pi(Month.July,1), new Pi(Month.July,2), new ChoDan(Month.July), new Yul(Month.July),
+                new Pi(Month.August,1), new Pi(Month.August,2), new Yul(Month.August), new Kwang(Month.August),
+                new Pi(Month.September,1), new Pi(Month.September,2), new ChungDan(Month.September), new Yul(Month.September),
+                new Pi(Month.October,1), new Pi(Month.October,2), new ChungDan(Month.October), new Yul(Month.October),
+                new Pi(Month.November,1), new Pi(Month.November,2), new SsangPi(Month.November), new Kwang(Month.November),
                 new SsangPi(Month.December), new ChoDan(Month.December), new Yul(Month.December), new Kwang(Month.December)
             };
             Shuffle();

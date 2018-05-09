@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using GoStop;
 using GoStop.Card;
 using GoStop.Collection;
+using GoStop.MonoGameComponents.Drawables;
 using GoStop.MonoGameComponents;
 using GoStop.Minhwatu;
 using MG_Library;
@@ -62,11 +63,15 @@ namespace GoStop
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
 
+        /// <summary>
+        /// add components to manager here
+        /// </summary>
         protected override void BeginRun()
         {
+            // TODO: Create start screen and mode selection - Low Priority
+            // Currently only supports one game mode.
             Components.Add(boardManager);
             boardManager.StartMinhwatuGameVsCPU();
         }

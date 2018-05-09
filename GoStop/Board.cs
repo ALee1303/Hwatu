@@ -22,7 +22,7 @@ namespace GoStop
         protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
 
-        protected BoardManager manager;
+        protected BoardManager _manager;
 
         public IHanafudaPlayer CurrentPlayer
         {
@@ -50,7 +50,7 @@ namespace GoStop
             }
         }
 
-        public Board()
+        public Board(BoardManager manager)
         {
             field = new Dictionary<Month, CardCollection>();
             InitializeField();
@@ -58,6 +58,7 @@ namespace GoStop
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
             playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
+            _manager = manager;
         }
 
         private void InitializeField()
@@ -69,6 +70,7 @@ namespace GoStop
         }
 
         #region Prepare Game
+
         // TODO:DealCard, GameResult
         protected virtual void PrepareGame()
         {
@@ -85,14 +87,9 @@ namespace GoStop
             playerWaitList.Clear();
         }
 
-        protected virtual void ResetBoard()
-        {
-            DeckCollection.Instance.GatherCards();
-            field.Clear();
-            collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
-            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
-        }
         #endregion
+
+        #region public methods for starting game on loaded board
 
         public virtual void StartGame()
         {
@@ -110,6 +107,16 @@ namespace GoStop
             }
             ResetBoard();
         }
+
+        public virtual void ResetBoard()
+        {
+            DeckCollection.Instance.GatherCards();
+            field.Clear();
+            collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
+            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
+        }
+
+        #endregion
 
         #region Deal Card
         /// <summary>
@@ -135,11 +142,16 @@ namespace GoStop
         private void DealCard(IHanafudaPlayer player, int amount = 5)
         {
             IEnumerable<Hanafuda> draws = DeckCollection.Instance.DrawCard(amount);
-            foreach (Hanafuda drawn in draws)
-            {
-                drawn.Owner = player;
-                drawn.Location = Location.Hand;
-            }
+            DealCardEventArgs args = new DealCardEventArgs();
+            args.Player = player;
+            args.Cards = draws;
+            OnCardsDealt(args);
+            // ToDo : remove
+            //foreach (Hanafuda drawn in draws)
+            //{
+            //    drawn.Owner = player;
+            //    drawn.Location = Location.Hand;
+            //}
             player.Hand.Add(draws);
         }
 
@@ -150,6 +162,11 @@ namespace GoStop
         protected void DealCardsOnField(int amount = 4)
         {
             IEnumerable<Hanafuda> draws = DeckCollection.Instance.DrawCard(amount);
+            DealCardEventArgs args = new DealCardEventArgs();
+            args.Cards = draws;
+            // update board manager's field
+            OnCardsOnField(args);
+            //update board's own field
             OrganizeField(draws);
         }
 
@@ -253,12 +270,7 @@ namespace GoStop
 
         #region EventHandler
 
-        public event EventHandler<MultipleMatchEventArgs> MultipleMatch;
-        
-        protected virtual void OnMultipleMatch(MultipleMatchEventArgs args)
-        {
-            MultipleMatch?.Invoke(this, args);
-        }
+        #endregion
 
         protected virtual void player_HandEmpty(object sender, EventArgs args)
         { }
@@ -270,12 +282,16 @@ namespace GoStop
         /// <param name="arg"></param>
         protected virtual void collection_SpecialEmpty(object sender, EventArgs arg)
         { }
-        #endregion
+        
 
-        #region Notify Board of Property Change
+        #region Manager EventHandler
 
         public event Action NewPlayerTurn;
         public event Action AllPlayerRemoved;
+
+        public event EventHandler<DealCardEventArgs> CardsDealt;
+        public event EventHandler<DealCardEventArgs> CardsOnField;
+        public event EventHandler<MultipleMatchEventArgs> MultipleMatch;
 
         protected virtual void OnNewPlayerTurn()
         {
@@ -284,8 +300,25 @@ namespace GoStop
 
         protected virtual void OnAllPlayerRemoved()
         {
-
+            AllPlayerRemoved?.Invoke();
         }
+
+        protected virtual void OnCardsDealt(DealCardEventArgs args)
+        {
+            CardsDealt?.Invoke(this, args);
+        }
+
+        protected virtual void OnCardsOnField(DealCardEventArgs args)
+        {
+            CardsOnField?.Invoke(this, args);
+        }
+
+        protected virtual void OnMultipleMatch(MultipleMatchEventArgs args)
+        {
+            MultipleMatch?.Invoke(this, args);
+        }
+
+
         #endregion
 
         public bool IsNewPlayer(IHanafudaPlayer player)
@@ -293,6 +326,12 @@ namespace GoStop
             return currentPlayer != player
                 && !orderedPlayers.Contains(player);
         }
+    }
+
+    public class DealCardEventArgs : EventArgs
+    {
+        public IHanafudaPlayer Player { get; set; }
+        public IEnumerable<Hanafuda> Cards { get; set; }
     }
 
     public class MultipleMatchEventArgs : EventArgs

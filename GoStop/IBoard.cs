@@ -9,6 +9,7 @@ namespace GoStop
 
         void StartGame();
         void EndGame();
+        void ResetBoard();
 
         void SubscribePlayer(IHanafudaPlayer player);
         void UnsubscribePlayer(IHanafudaPlayer player);
