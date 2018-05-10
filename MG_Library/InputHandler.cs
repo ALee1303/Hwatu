@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MG_Library
 {
-    public interface IInputManager
+    public interface IInputHandler
     {
         MouseState PreviousMouseState { get; }
         MouseState CurrentMouseState { get; }
@@ -30,7 +30,7 @@ namespace MG_Library
         Left, Middle, Right
     }
 
-    public class InputManager : GameComponent, IInputManager
+    public class InputHandler : GameComponent, IInputHandler
     {
         // #region #endregion tags are a nice way of blockifying code in VS.
         #region Fields
@@ -51,11 +51,11 @@ namespace MG_Library
         public KeyboardState CurrentKeyboardState { get => currentKeyboardState; }
         #endregion
 
-        public InputManager(Game game) : base(game)
+        public InputHandler(Game game) : base(game)
         {
             previousMouseState = Mouse.GetState();
             previousKeyboardState = Keyboard.GetState();
-            Game.Services.AddService<IInputManager>(this);
+            Game.Services.AddService<IInputHandler>(this);
         }
 
         #region GameComponent Override
@@ -86,8 +86,7 @@ namespace MG_Library
 
         public bool MouseButtonClicked(MouseButton btn)
         {
-            return (WasMouseButtonPressed(btn) || IsMouseButtonReleased(btn))
-                && (WasMouseButtonReleased(btn) || IsMouseButtonPressed(btn));
+            return (WasMouseButtonReleased(btn) != IsMouseButtonReleased(btn));
         }
 
         public bool MouseButtonHeld(MouseButton btn)

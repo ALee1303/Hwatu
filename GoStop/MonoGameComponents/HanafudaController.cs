@@ -11,16 +11,27 @@ using GoStop.MonoGameComponents.Drawables;
 
 namespace GoStop.MonoGameComponents
 {
-    public class HanafudaController : GameComponent
+    public class HanafudaController
     {
-        private IInputManager inputManager;
+        private IInputHandler inputManager;
 
-        public HanafudaController(Game game) : base(game)
+        public HanafudaController(GameServiceContainer services)
         {
-            inputManager = Game.Services.GetService<InputManager>();
+            inputManager =services.GetService<IInputHandler>();
         }
 
-        public bool IsMouseOverSelectable(DrawableCard drawable)
+        public DrawableCard GetMouseOverCard(List<DrawableCard> selecatables)
+        {
+            DrawableCard mouseOverCard = null;
+            foreach (DrawableCard card in selecatables)
+            {
+                if (IsMouseOverCard(card))
+                    mouseOverCard = card;
+            }
+            return mouseOverCard;
+        }
+
+        public bool IsMouseOverCard(DrawableCard drawable)
         {
             Rectangle bound = drawable.Bound;
             if (inputManager.IsMouseOver(bound))

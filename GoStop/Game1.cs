@@ -22,15 +22,15 @@ namespace GoStop
 
         BoardManager boardManager;
         IHanafudaPlayer mainPlayer;
+        IInputHandler inputManager;
 
         public Game1()
         {
-            InputManager input = new InputManager(this);
-            this.Services.AddService(input);
+            inputManager = new InputHandler(this);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             boardManager = new BoardManager(this);
-            mainPlayer = new MainMinhwatuPlayer(this);
+            mainPlayer = new MainMinhwatuPlayer(Services);
             mainPlayer.JoinBoard(boardManager);
             this.IsMouseVisible = true;
         }
@@ -73,6 +73,7 @@ namespace GoStop
             // TODO: Create start screen and mode selection - Low Priority
             // Currently only supports one game mode.
             Components.Add(boardManager);
+            Components.Add((InputHandler)inputManager);
             boardManager.StartMinhwatuGameVsCPU();
         }
 
