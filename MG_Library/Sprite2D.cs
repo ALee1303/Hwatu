@@ -17,7 +17,7 @@ namespace MG_Library
             get
             {
                 return new Rectangle((int)Position.X, (int)Position.Y,
-                    (int)Position.X - Texture.Width / 2, (int)Position.Y - Texture.Height / 2);
+                    Texture.Width, Texture.Height);
             }
         }
 
@@ -55,7 +55,7 @@ namespace MG_Library
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Draw(Texture, Position - Origin,
+            _spriteBatch.Draw(Texture, Position,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }
@@ -65,7 +65,7 @@ namespace MG_Library
         /// </summary>
         public virtual void Draw()
         {
-            _spriteBatch.Draw(Texture, Position - Origin,
+            _spriteBatch.Draw(Texture, Position,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }
@@ -76,7 +76,7 @@ namespace MG_Library
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position - Origin,
+            spriteBatch.Draw(Texture, Position,
                 SourceRect, Color.White * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }

@@ -31,9 +31,9 @@ namespace GoStop.MonoGameComponents
 
         public IMainPlayer MainPlayer { get => _mainPlayer; }
         public IHanafudaPlayer CurrentPlayer { get => _board.CurrentPlayer; }
-        public HanafudaController Controller { get => ((IMainPlayer)MainPlayer).Controller; }
-        
-        public Sprite2D Outline { get => cardFactory.Outline; }
+        public HanafudaController Controller { get => _mainPlayer.Controller; }
+
+        private Sprite2D loadedOutline;
 
         public BoardManager(Game game) : base(game)
         {
@@ -95,6 +95,7 @@ namespace GoStop.MonoGameComponents
             handCards.Add(player, new List<DrawableCard>());
             collectedCards.Add(player, new List<DrawableCard>());
             ((Player)player).CardPlayed += player_CardPlayed;
+            ((Player)player).MouseOverCard += player_MouseOverCard;
         }
 
         public void OnJoinBoard(IHanafudaPlayer player)
@@ -115,7 +116,7 @@ namespace GoStop.MonoGameComponents
             foreach (DrawableCard selectable in selectableCards)
             {
                 // TODO: Mouseover highlight logic
-                if (Controller.IsMouseOverSelectable(selectable) &&
+                if (Controller.IsMouseOverCard(selectable) &&
                     Controller.IsLeftMouseClicked())
                     OnCardSelected(selectable);
             }
@@ -147,6 +148,8 @@ namespace GoStop.MonoGameComponents
             // TODO: Location Logic for Collected
             DrawCollected();
             DrawField();
+            if (loadedOutline != null)
+                loadedOutline.Draw();
         }
 
         private void DrawHands()
@@ -222,9 +225,8 @@ namespace GoStop.MonoGameComponents
 
         protected virtual void board_NewPlayerTurn()
         {
-            if (CurrentPlayer is IMainPlayer)
-                selectableCards = handCards[CurrentPlayer];
-            // TODO input logic
+            List<DrawableCard> hand = handCards[CurrentPlayer];
+            CurrentPlayer.PlayCard(hand);
         }
 
         protected virtual void board_CardsDealt(object sender, DealCardEventArgs args)
@@ -266,98 +268,66 @@ namespace GoStop.MonoGameComponents
         #endregion
 
 
-        #region Player EventHandler Subscriber
-        protected virtual void player_CardPlayed(object sender, CardPlayedEventArgs args)
+        #region Player EventHandler
+        
+        protected virtual void player_MouseOverCard(object sender, PlayerEventArgs args)
         {
+            var mainP = (IMainPlayer)sender;
+            if (mainP == null || mainP != MainPlayer)
+                return;
+            var toOutline = args.Card;
+            if (toOutline != null)
+            {
+                loadedOutline = cardFactory.RetrieveOutline();
+                loadedOutline.Position = toOutline.Position;
+            }
+            else // destroy loaded outline
+            {
+                cardFactory.RemoveOutline();
+                loadedOutline = null;
+            }
+        }
+
+        protected virtual void player_CardPlayed(object sender, PlayerEventArgs args)
+        {
+
         }
         #endregion
-
-        #region Drawable events
-
-        public void drawable_MovedToDeck(DrawableCard drawable, HanafudaEventArgs args)
-        {
-            IHanafudaPlayer owner = args.Owner;
-            bool revealed = args.Revealed;
-            if (owner == MainPlayer)
-            {
-                if (collectedCards[owner].Remove(drawable))
-                    handCards[owner].Remove(drawable);
-            }
-            else if (owner == null)
-            {
-                Month idx = drawable.Card.Month;
-                fieldCards[idx].Remove(drawable);
-            }
-            else
-            {
-                if (revealed)
-                    collectedCards[owner].Remove(drawable);
-                else
-                    handCards[owner].Remove(drawable);
-            }
-            deckCards.Add(drawable);
-            drawable.Position = Vector2.Zero;
-        }
-
-        public void drawable_MovedToHand(DrawableCard drawable, HanafudaEventArgs args)
-        {
-            IHanafudaPlayer owner = args.Owner;
-            bool revealed = args.Revealed;
-            if (revealed)
-            {
-                Month idx = drawable.Card.Month;
-                fieldCards[idx].Remove(drawable);
-            }
-            else
-                deckCards.Remove(drawable);
-            handCards[owner].Add(drawable);
-            drawable.Position = GetHandLocation(owner);
-        }
-
-        public void drawable_MovedToField(DrawableCard drawable)
-        {
-            Month idx = drawable.Card.Month;
-            deckCards.Remove(drawable);
-            fieldCards[idx].Add(drawable);
-            drawable.Position = GetFieldLocation(idx);
-        }
-
-        #endregion
-
+        
         #region Location Methods
 
-        private void PlaceCardOnHand(IHanafudaPlayer owner, DrawableCard card)
+        private void PlaceCardOnHand(IHanafudaPlayer owner, DrawableCard drawable)
         {
-            card.Position = GetHandLocation(owner);
-            handCards[owner].Add(card);
+            handCards[owner].Add(drawable);
+            drawable.Position = GetHandLocation(owner);
         }
 
         /// Hardcoded for test screen
         public Vector2 GetHandLocation(IHanafudaPlayer owner)
         {
-            int slot = handCards[owner].Count + 1;
-            Vector2 position = new Vector2(60.0f * slot, 81.0f);
-            position.Y -= 30;
-            position.X -= (5) * slot;
+            int slot = handCards[owner].Count - 1;
+            Vector2 position = new Vector2(50.0f * slot, 45.5f);
+            position.X += 2 * slot + 30;
             if (owner == MainPlayer)
-                position.Y += 400;
+                position.Y += 390.0f;
             return position;
         }
 
         public void PlaceCardOnField(DrawableCard drawable)
         {
             Month month = drawable.Card.Month;
+            fieldCards[month].Add(drawable);
             drawable.Position = GetFieldLocation(month);
         }
 
         public Vector2 GetFieldLocation(Month month)
         {
             int slot = (int)month;
-            int xOffSet = (slot % 6) + 1;
+            int xOffSet = (slot % 6);
             int yOffSet = (slot / 6) + 1;
-            Vector2 position = new Vector2(100.0f * xOffSet, 100 * yOffSet);
-            position.X = position.X + ((fieldCards[month].Count - 1) * 10) - (5 * xOffSet);
-            position.Y += 150;
+            Vector2 position = new Vector2(80.0f * xOffSet, 100 * yOffSet);
+            position.X += 30.0f + ((fieldCards[month].Count - 1) * 6) + (xOffSet -1) * 2;
+            position.Y += 100;
             return position;
         }
         #endregion

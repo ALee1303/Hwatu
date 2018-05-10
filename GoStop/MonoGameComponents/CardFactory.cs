@@ -15,34 +15,47 @@ namespace GoStop.MonoGameComponents
     public class CardFactory : GameComponent
     {
         private Dictionary<string, Sprite2D> spriteGallery;
-        private Queue<BackImage> backImages;
+        private Queue<Sprite2D> backImages;
         private Sprite2D outline;
-        private BoardManager manager;
-        
-        public Sprite2D Outline { get => outline; }
 
         public CardFactory(Game game) : base(game)
         {
-            manager = Game.Services.GetService<BoardManager>();
             //setup gallery
             spriteGallery = new Dictionary<string, Sprite2D>();
-            backImages = new Queue<BackImage>();
+            backImages = new Queue<Sprite2D>();
+            outline = null;
         }
-
         public DrawableCard ReturnPairedDrawable(Hanafuda card)
         {
-            string idx = StringParseCardType(card.Month, card.Type);
-            if (card is Pi)
-                idx += ((Pi)card).PiCount;
-            Sprite2D image = spriteGallery[idx];
-            return new DrawableCard(Game, card, image);
+            Sprite2D front = RetrieveFromGallery(card);
+            return new DrawableCard(Game, card, front);
         }
         public DrawableCard ReturnTurnedDrawable(Hanafuda card)
         {
             Sprite2D back = GetBackImage();
             return new DrawableCard(Game, card, back);
         }
-        
+        public Sprite2D RetrieveOutline()
+        {
+            if (outline != null)
+                return outline;
+            outline = new OutlineImage(Game);
+            outline.Initialize();
+            return outline;
+        }
+        public void RemoveOutline()
+        {
+            outline.Dispose();
+            outline = null;
+        }
+
+        private Sprite2D RetrieveFromGallery(Hanafuda card)
+        {
+            string idx = StringParseCardType(card.Month, card.Type);
+            if (card is Pi)
+                idx += ((Pi)card).PiCount;
+            return spriteGallery[idx];
+        }
         private string StringParseCardType(Month month, CardType type)
         {
             return String.Join("/", month, type);
@@ -135,9 +148,20 @@ namespace GoStop.MonoGameComponents
         }
         #endregion
 
-        #region BackImage Setup
+        #region BackImage Methods
 
-        private BackImage GetBackImage()
+        /// <summary>
+        /// get current back image and set it to null or provided img
+        /// </summary>
+        /// <param name="drawable"></param>
+        /// <param name="newImg"></param>
+        public void StoreBackImage(DrawableCard drawable, Sprite2D newImg = null)
+        {
+            Sprite2D retrieved = drawable.RetrieveImage();
+            backImages.Enqueue(retrieved);
+        }
+
+        private Sprite2D GetBackImage()
         {
             if (backImages.Count < 1)
                 return new BackImage(Game);
