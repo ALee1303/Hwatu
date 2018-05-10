@@ -17,8 +17,6 @@ namespace GoStop.MonoGameComponents.Drawables
         private Hanafuda _card;
         private Vector2 position, scale;
         private Sprite2D cardImage;
-        public Sprite2D Outline { get => _manager.Outline; }
-        public bool Revealed { get => _card.Revealed; }
         public Vector2 Position
         {
             get => position;
@@ -48,10 +46,21 @@ namespace GoStop.MonoGameComponents.Drawables
         {
             _manager = Game.Services.GetService<BoardManager>();
             _card = card;
-            //_card.OwnerChanged += card_OwnerChanged;
-            //_card.RevealedChanged += card_RevealedChanged;
-            _card.LocationChanged += card_LocationChanged;
             cardImage = image;
+        }
+
+
+        /// <summary>
+        /// retrieve current image and set it to null
+        /// Or to provided parameter
+        /// </summary>
+        /// <param name="newImg"></param>
+        /// <returns></returns>
+        public Sprite2D RetrieveImage(Sprite2D newImg = null)
+        {
+            Sprite2D oldImg = cardImage;
+            cardImage = newImg;
+            return oldImg;
         }
 
         #region Drawable Override
@@ -65,11 +74,6 @@ namespace GoStop.MonoGameComponents.Drawables
         {
             cardImage.Initialize();
         }
-        
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
               
         #endregion
 
@@ -77,54 +81,5 @@ namespace GoStop.MonoGameComponents.Drawables
         {
             cardImage.Draw();
         }
-
-        /// <summary>
-        /// Change Hidden status based on MainPlayer
-        /// called from card event
-        /// </summary>
-        private void CheckRevealedByOwner()
-        {
-            if (_card.Owner == _manager.MainPlayer)
-                _card.Revealed = true;
-        }
-
-        #region Card EventHandler Subscribable
-
-        // currently not used
-        protected virtual void card_OwnerChanged(object sender, HanafudaEventArgs args)
-        { }
-        // currently not used
-        protected virtual void card_RevealedChanged(object sender, HanafudaEventArgs args)
-        {
-            var card = (Hanafuda)sender;
-            if (card != _card)
-                new ArgumentException("Changed card does not belong to this object");
-        }
-
-        protected virtual void card_LocationChanged(object sender, HanafudaEventArgs args)
-        {
-            var card = (Hanafuda)sender;
-            if (card != _card)
-                new ArgumentException("Changed card does not belong to this object");
-            if (args.Location == Location.Deck)
-            {
-                _manager.drawable_MovedToDeck(this, args);
-                _card.Revealed = false;
-                _card.Owner = null;
-            }
-            if (args.Location == Location.Hand)
-            {
-                _manager.drawable_MovedToHand(this, args);
-                CheckRevealedByOwner();
-            }
-            else
-            {
-                _manager.drawable_MovedToField(this);
-                _card.Revealed = true;
-            }
-            // TODO: change location logic
-        }
-
-        #endregion
     }
 }

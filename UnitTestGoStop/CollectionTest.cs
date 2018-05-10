@@ -46,32 +46,5 @@ namespace UnitTestGoStop
             Assert.AreEqual(collection[1], cards[1]);
         }
 
-        [TestMethod]
-        public void ListCopyTest()
-        {
-            List<Hanafuda> cards = new List<Hanafuda> { new Kwang(Month.April), new Kwang(Month.December) };
-            List<Hanafuda> reference = cards;
-            Player owner = new Player();
-            Assert.IsNull(cards[1].Owner);
-            reference[1].Owner = owner;
-            Assert.IsNotNull(cards[1].Owner);
-            reference.Clear();
-            Assert.AreEqual(0, cards.Count);
-        }
-
-        [TestMethod]
-        public void ListMoveTest()
-        {
-            List<Hanafuda> cards = new List<Hanafuda> { new Kwang(Month.April), new Kwang(Month.December) };
-            List<Hanafuda> reference = new List<Hanafuda>();
-            foreach (Hanafuda card in cards)
-                reference.Add(card);
-            Player owner = new Player();
-            Assert.IsNull(cards[1].Owner);
-            reference[1].Owner = owner;
-            Assert.IsNotNull(cards[1].Owner);
-            reference.Clear();
-            Assert.AreEqual(2, cards.Count);
-        }
     }
 }

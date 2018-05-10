@@ -11,25 +11,6 @@ namespace UnitTestGoStop
         Hanafuda hanafuda;
 
         [TestMethod]
-        public void OwnerTest()
-        {
-            hanafuda = new Kwang(Month.April);
-            //no owner initially
-            Assert.AreEqual(null, hanafuda.Owner);
-            //initialization
-            IHanafudaPlayer player = new Player();
-            bool isTriggered = false;
-            IHanafudaPlayer argsPlayer = null;
-            hanafuda.OwnerChanged += (s, e) => {
-                isTriggered = true;
-                argsPlayer = e.Owner; };
-            hanafuda.Owner = player;
-            Assert.AreEqual(true, isTriggered);
-            Assert.AreEqual(player, hanafuda.Owner);
-            Assert.AreEqual(player, argsPlayer);
-        }
-
-        [TestMethod]
         public void KwangEquals()
         {
             //initialization for test
