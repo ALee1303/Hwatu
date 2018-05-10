@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using GoStop.Card;
 using GoStop.MonoGameComponents;
+using GoStop.MonoGameComponents.Drawables;
 
 namespace GoStop
 {
@@ -10,7 +11,7 @@ namespace GoStop
     {
         Collection.CardCollection Hand { get; }
 
-        void TakeTurn();
+        void PlayCard(List<DrawableCard> hand);
         void JoinBoard(BoardManager manager);
         void ExitBoard(BoardManager manager);
         void RenewHandAndSpecial();

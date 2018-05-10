@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 
 using GoStop.MonoGameComponents;
+using GoStop.MonoGameComponents.Drawables;
 
 namespace GoStop
 {
@@ -21,8 +22,18 @@ namespace GoStop
 
         #region Interface Methods
 
-        public virtual void TakeTurn()
+        public virtual void PlayCard(List<DrawableCard> hand)
         { }
+
+        protected virtual void PlayCard(DrawableCard card)
+        {
+            PlayerEventArgs args = new PlayerEventArgs();
+            args.Card = card;
+            //if (!hand)
+            //    OnHandEmpty(EventArgs.Empty);
+            OnCardPlayed(args);
+        }
+
 
         public void JoinBoard(BoardManager manager)
         {
@@ -71,28 +82,23 @@ namespace GoStop
 
         #endregion
 
-        protected virtual void PlayCard(Hanafuda card)
-        {
-            if (card == null || !hand.Remove(card))
-                return;
-            CardPlayedEventArgs args = new CardPlayedEventArgs();
-            args.Card = card;
-            if (!hand)
-                OnHandEmpty(EventArgs.Empty);
-            OnCardPlayed(args);
-        }
 
 
         #region Event
 
-        public event EventHandler<CardPlayedEventArgs> CardPlayed;
+        public event EventHandler<PlayerEventArgs> CardPlayed;
         public event EventHandler<EventArgs> HandEmpty;
-        
+        public event EventHandler<PlayerEventArgs> MouseOverCard;
+
+        protected virtual void OnMouseOver(PlayerEventArgs args)
+        {
+            MouseOverCard?.Invoke(this, args);
+        }
         /// <summary>
         /// On Manager
         /// </summary>
         /// <param name="args"></param>
-        protected virtual void OnCardPlayed(CardPlayedEventArgs args)
+        protected virtual void OnCardPlayed(PlayerEventArgs args)
         {
             CardPlayed?.Invoke(this, args);
         }
@@ -109,8 +115,8 @@ namespace GoStop
         #endregion
     }
 
-    public class CardPlayedEventArgs : EventArgs
+    public class PlayerEventArgs : EventArgs
     {
-        public Hanafuda Card { get; set; }
+        public DrawableCard Card { get; set; }
     }
 }

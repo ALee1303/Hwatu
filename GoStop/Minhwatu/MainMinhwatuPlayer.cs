@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework;
 using GoStop.MonoGameComponents;
+using GoStop.MonoGameComponents.Drawables;
 
 namespace GoStop.Minhwatu
 {
@@ -14,19 +15,49 @@ namespace GoStop.Minhwatu
         private HanafudaController controller;
         public HanafudaController Controller { get => controller; }
 
-        public MainMinhwatuPlayer(Game game) : base()
+        private DrawableCard outlinedCard;
+        public DrawableCard OutlinedCard
         {
-            controller = new HanafudaController(game);
+            get => outlinedCard;
+            set
+            {
+                if (outlinedCard == value)
+                    return;
+                outlinedCard = value;
+                PlayerEventArgs args = new PlayerEventArgs();
+                args.Card = outlinedCard;
+                OnMouseOver(args);
+            }
+        }
+
+        public void Update()
+        {
+
+        }
+
+        public MainMinhwatuPlayer(GameServiceContainer services) : base()
+        {
+            controller = new HanafudaController(services);
+            outlinedCard = null;
         }
         
-        public void TakeTurn()
+        public override void PlayCard(List<DrawableCard> hand)
         {
-
+            Task playerTask = new Task(() => PlayCardTask(hand));
+            playerTask.Start();
         }
 
-        public Task TakeTurnAsync()
+        public void PlayCardTask(List<DrawableCard> hand)
         {
-            return null;
+            DrawableCard selected = null;
+            while (selected == null)
+            {
+                OutlinedCard = controller.GetMouseOverCard(hand);
+                if (controller.IsLeftMouseClicked())
+                    selected = OutlinedCard;
+            }
+            PlayCard(selected);
         }
+        
     }
 }

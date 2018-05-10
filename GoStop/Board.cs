@@ -89,7 +89,7 @@ namespace GoStop
 
         #endregion
 
-        #region public methods for starting game on loaded board
+        #region Game Progression Method
 
         public virtual void StartGame()
         {
@@ -146,12 +146,6 @@ namespace GoStop
             args.Player = player;
             args.Cards = draws;
             OnCardsDealt(args);
-            // ToDo : remove
-            //foreach (Hanafuda drawn in draws)
-            //{
-            //    drawn.Owner = player;
-            //    drawn.Location = Location.Hand;
-            //}
             player.Hand.Add(draws);
         }
 
@@ -174,7 +168,7 @@ namespace GoStop
         {
             foreach (Hanafuda drawn in draws)
             {
-                drawn.Location = Location.Field;
+                //drawn.Location = Location.Field;
                 field[drawn.Month].Add(drawn);
             }
         }
@@ -267,11 +261,7 @@ namespace GoStop
         }
 
         #endregion
-
-        #region EventHandler
-
-        #endregion
-
+        
         protected virtual void player_HandEmpty(object sender, EventArgs args)
         { }
 

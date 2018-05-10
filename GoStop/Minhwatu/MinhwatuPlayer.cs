@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using GoStop.Collection;
+using GoStop.MonoGameComponents.Drawables;
 
 namespace GoStop.Minhwatu
 {
@@ -19,7 +20,7 @@ namespace GoStop.Minhwatu
             };
         }
 
-        public override void TakeTurn()
+        public override void PlayCard(List<DrawableCard> hand)
         { }
 
         public override void PrepareSpecialCollection()

@@ -31,9 +31,9 @@ namespace GoStop.Minhwatu
 
         protected override void collection_SpecialEmpty(object sender, EventArgs arg)
         {
-            Type type = typeof(SpecialCards);
+            Type type = sender.GetType();
             SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)arg;
-            if (!(type.IsInstanceOfType(sender) || specialArg == null))
+            if (!(type.IsInstanceOfType(typeof(SpecialCards)) || specialArg == null))
                 return;
             Player player = specialArg.Owner;
             scoreBoard[player] = specialArg.Points;

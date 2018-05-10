@@ -9,7 +9,6 @@ namespace GoStop
     public interface IMainPlayer : IHanafudaPlayer
     {
         MonoGameComponents.HanafudaController Controller { get; }
-
-        Task TakeTurnAsync();
+        
     }
 }

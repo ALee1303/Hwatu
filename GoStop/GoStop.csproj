@@ -62,6 +62,7 @@
     <Compile Include="IBoard.cs" />
     <Compile Include="Collection\FieldCollection.cs" />
     <Compile Include="IMainPlayer.cs" />
+    <Compile Include="MonoGameComponents\Drawables\SpriteImage\OutlineImage.cs" />
     <Compile Include="Minhwatu\MainMinhwatuPlayer.cs" />
     <Compile Include="Minhwatu\MinhwatuPlayer.cs" />
     <Compile Include="MonoGameComponents\BoardManager.cs" />
