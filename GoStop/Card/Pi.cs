@@ -16,5 +16,13 @@ namespace GoStop.Card
                 new ArgumentException("Invalid Card Type");
             piCount = count;
         }
+
+        protected override bool isEqual(Hanafuda other)
+        {
+            if (base.isEqual(other)
+                && this.piCount == ((Pi)other).piCount)
+                return true;
+            return false;
+        }
     }
 }

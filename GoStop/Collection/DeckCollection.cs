@@ -69,7 +69,6 @@ namespace GoStop.Collection
         {
             foreach (Hanafuda card in reference)
             {
-                card.Location = Location.Deck;
                 cards.Add(card);
             }
             Shuffle();
