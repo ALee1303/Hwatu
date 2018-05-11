@@ -16,8 +16,8 @@ namespace MG_Library
         {
             get
             {
-                return new Rectangle((int)Position.X, (int)Position.Y,
-                    Texture.Width, Texture.Height);
+                return new Rectangle((int)Position.X - (int)Origin.X,
+                    (int)Position.Y - (int)Origin.Y, Texture.Width, Texture.Height);
             }
         }
 

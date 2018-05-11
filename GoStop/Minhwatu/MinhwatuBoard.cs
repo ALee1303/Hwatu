@@ -21,6 +21,18 @@ namespace GoStop.Minhwatu
             minhwatuPoints.Add(typeof(HongDanCollection), null);
         }
 
+        public override List<SpecialCards> PrepareSpecialCollection(IHanafudaPlayer player)
+        {
+            List<SpecialCards> specials = new List<SpecialCards>
+            {
+                new ChoYak(player), new PoongYak(player), new BiYak(player),
+                new ChoDanCollection(player), new ChungDanCollection(player), new HongDanCollection(player)
+            };
+            foreach (SpecialCards special in specials)
+                special.CollectionEmpty += collection_SpecialEmpty;
+            return specials;
+        }
+
         protected override void player_HandEmpty(object sender, EventArgs args)
         {
             var player = (Player)sender;
@@ -29,15 +41,13 @@ namespace GoStop.Minhwatu
             RemovePlayer(currentPlayer);
         }
 
-        protected override void collection_SpecialEmpty(object sender, EventArgs arg)
+        protected override void collection_SpecialEmpty(object sender, EventArgs args)
         {
             Type type = sender.GetType();
-            SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)arg;
+            SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)args;
             if (!(type.IsInstanceOfType(typeof(SpecialCards)) || specialArg == null))
-                return;
-            Player player = specialArg.Owner;
-            scoreBoard[player] = specialArg.Points;
-            minhwatuPoints[sender.GetType()] = specialArg.Owner;
+                new ArgumentException("Not a Special Collection");
+            _manager.UpdateScore(specialArg.Points, CurrentPlayer);
         }
     }
 }

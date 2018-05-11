@@ -16,7 +16,6 @@ namespace GoStop
         //cards
         protected Dictionary<Month, CardCollection> field;
         protected Dictionary<IHanafudaPlayer, CollectedCards> collected;
-        protected Dictionary<IHanafudaPlayer, int> scoreBoard;
         //players
         protected IHanafudaPlayer currentPlayer;
         protected List<IHanafudaPlayer> playerWaitList;
@@ -54,7 +53,6 @@ namespace GoStop
         {
             field = new Dictionary<Month, CardCollection>();
             InitializeField();
-            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
             playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
@@ -102,7 +100,6 @@ namespace GoStop
             //in case game ends early
             foreach (IHanafudaPlayer player in orderedPlayers)
             {
-                player.RenewHandAndSpecial();
                 RemovePlayer(player);
             }
             ResetBoard();
@@ -113,7 +110,29 @@ namespace GoStop
             DeckCollection.Instance.GatherCards();
             field.Clear();
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
-            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
+        }
+
+        public virtual void CalculatePoint()
+        { }
+
+        public virtual void CalculatePoint(List<Hanafuda> cards)
+        {
+
+        }
+
+        public virtual void EndTurn()
+        {
+            orderedPlayers.Enqueue(CurrentPlayer);
+            CurrentPlayer = orderedPlayers.Dequeue();
+        }
+        protected virtual void CheckGameEnd()
+        {
+
+        }
+
+        public virtual List<SpecialCards> PrepareSpecialCollection(IHanafudaPlayer player)
+        {
+            return null;
         }
 
         #endregion
@@ -146,7 +165,6 @@ namespace GoStop
             args.Player = player;
             args.Cards = draws;
             OnCardsDealt(args);
-            player.Hand.Add(draws);
         }
 
         /// <summary>
@@ -160,17 +178,6 @@ namespace GoStop
             args.Cards = draws;
             // update board manager's field
             OnCardsOnField(args);
-            //update board's own field
-            OrganizeField(draws);
-        }
-
-        protected void OrganizeField(IEnumerable<Hanafuda> draws)
-        {
-            foreach (Hanafuda drawn in draws)
-            {
-                //drawn.Location = Location.Field;
-                field[drawn.Month].Add(drawn);
-            }
         }
         #endregion
 
@@ -212,16 +219,7 @@ namespace GoStop
             //add to queue
             orderedPlayers.Enqueue(player);
             //add scoreBoard
-            scoreBoard.Add(player, 0);
             collected.Add(player, new CollectedCards());
-            //event
-            player.PrepareSpecialCollection();
-            player.SubscribeSpecialEmptyEvent(collection_SpecialEmpty);
-            var p = (Player)player;
-            if (p != null)
-            {
-                p.HandEmpty += player_HandEmpty;
-            }
             PlayingCount++;
         }
 
@@ -247,15 +245,9 @@ namespace GoStop
                 }
                 orderedPlayers = q;
             }
-            scoreBoard.Remove(player);
             collected.Remove(player);
             //event
-            player.UnsubscribeSpecialEmptyEvent(collection_SpecialEmpty);
             var p = (Player)player;
-            if (p != null)
-            {
-                p.HandEmpty -= player_HandEmpty;
-            }
             playerWaitList.Add(player);
             PlayingCount--;
         }

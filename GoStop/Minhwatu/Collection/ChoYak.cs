@@ -4,7 +4,7 @@ namespace GoStop.Collection
 {
     public class ChoYak : YakCollection
     {
-        public ChoYak(Player owner) : base(owner)
+        public ChoYak(IHanafudaPlayer owner) : base(owner)
         {
             cards.Add(new Pi(Month.May, 1));
             cards.Add(new Pi(Month.May, 2));

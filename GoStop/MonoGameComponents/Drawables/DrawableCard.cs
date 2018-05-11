@@ -41,6 +41,7 @@ namespace GoStop.MonoGameComponents.Drawables
         }
         public Rectangle Bound { get => cardImage.BoundingRect; }
         public Hanafuda Card { get => _card; }
+        public string Path { get => cardImage.Path; }
         
         public DrawableCard(Game game, Hanafuda card, Sprite2D image) : base(game)
         {

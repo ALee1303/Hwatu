@@ -9,15 +9,10 @@ namespace GoStop
 {
     public interface IHanafudaPlayer
     {
-        Collection.CardCollection Hand { get; }
-
+        void PlayCard(DrawableCard card);
         void PlayCard(List<DrawableCard> hand);
+        void ChooseCard(List<DrawableCard> choice);
         void JoinBoard(BoardManager manager);
         void ExitBoard(BoardManager manager);
-        void RenewHandAndSpecial();
-        void PrepareSpecialCollection();
-        void CardsCollected(List<Hanafuda> wonCards);
-        void SubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
-        void UnsubscribeSpecialEmptyEvent(EventHandler<EventArgs> handler);
     }
 }

@@ -13,23 +13,11 @@ namespace GoStop.Minhwatu
     {
         public MinhwatuPlayer() : base()
         {
-            specials = new List<SpecialCards>
-            {
-                new ChoYak(this), new PoongYak(this), new BiYak(this),
-                new ChoDanCollection(this), new ChungDanCollection(this), new HongDanCollection(this)
-            };
         }
 
         public override void PlayCard(List<DrawableCard> hand)
         { }
 
-        public override void PrepareSpecialCollection()
-        {
-            specials = new List<SpecialCards>
-            {
-                new ChoYak(this), new PoongYak(this), new BiYak(this),
-                new ChoDanCollection(this), new ChungDanCollection(this), new HongDanCollection(this)
-            };
-        }
+
     }
 }

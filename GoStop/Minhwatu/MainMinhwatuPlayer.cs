@@ -25,16 +25,11 @@ namespace GoStop.Minhwatu
                     return;
                 outlinedCard = value;
                 PlayerEventArgs args = new PlayerEventArgs();
-                args.Card = outlinedCard;
+                args.Selected = outlinedCard;
                 OnMouseOver(args);
             }
         }
-
-        public void Update()
-        {
-
-        }
-
+        
         public MainMinhwatuPlayer(GameServiceContainer services) : base()
         {
             controller = new HanafudaController(services);
@@ -46,18 +41,39 @@ namespace GoStop.Minhwatu
             Task playerTask = new Task(() => PlayCardTask(hand));
             playerTask.Start();
         }
+        private void PlayCardTask(List<DrawableCard> hand)
+        {
+            DrawableCard selected = SelectCardLoop(hand);
+            PlayCard(selected);
+        }
 
-        public void PlayCardTask(List<DrawableCard> hand)
+        public override void ChooseCard(List<DrawableCard> choices)
+        {
+            Task chooseTask = new Task(() => ChooseCardTask(choices));
+            chooseTask.Start();
+        }
+
+        private void ChooseCardTask(List<DrawableCard> choices)
+        {
+            DrawableCard selected = SelectCardLoop(choices);
+            DrawableCard notSelected = choices.Find(x => x != selected);
+            ChooseCard(selected, notSelected);
+        }
+
+        private DrawableCard SelectCardLoop(List<DrawableCard> cards)
         {
             DrawableCard selected = null;
             while (selected == null)
             {
-                OutlinedCard = controller.GetMouseOverCard(hand);
+                OutlinedCard = controller.GetMouseOverCard(cards);
                 if (controller.IsLeftMouseClicked())
                     selected = OutlinedCard;
+                
             }
-            PlayCard(selected);
+            OutlinedCard = null;
+            return selected;
         }
-        
+
+
     }
 }

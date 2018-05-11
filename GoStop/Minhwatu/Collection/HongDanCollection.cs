@@ -4,7 +4,7 @@ namespace GoStop.Collection
 {
     public class HongDanCollection : DanCollection
     {
-        public HongDanCollection(Player owner) : base(owner)
+        public HongDanCollection(IHanafudaPlayer owner) : base(owner)
         {
             cards.Add(new HongDan(Month.January));
             cards.Add(new HongDan(Month.February));
