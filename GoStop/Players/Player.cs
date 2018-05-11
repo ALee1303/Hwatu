@@ -14,7 +14,7 @@ namespace GoStop
         public Player()
         { }
 
-        public virtual void PlayCard(DrawableCard card)
+        protected virtual void PlayCard(DrawableCard card)
         {
             PlayerEventArgs args = new PlayerEventArgs();
             args.Selected = card;

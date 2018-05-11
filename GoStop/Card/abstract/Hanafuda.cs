@@ -8,7 +8,7 @@ namespace GoStop.Card
         May, June, July, August, September,
         October, November, December
     }
-    public enum CardType { Pi, Tti, Yul, Kwang, SsangPi }
+    public enum CardType { Pi, SsangPi, Tti, Yul, Kwang }
 
     // TODO: add IHanafuda interface
     public abstract class Hanafuda : IEquatable<Hanafuda>

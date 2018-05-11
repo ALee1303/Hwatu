@@ -32,6 +32,7 @@ namespace GoStop.Collection
                 return;
             SpecialChangedEventArgs changeArgs = new SpecialChangedEventArgs();
             changeArgs.Match = wonCard;
+            changeArgs.Owner = owner;
             OnCollectionChanged(changeArgs);
             if (Empty())
             {
@@ -47,6 +48,7 @@ namespace GoStop.Collection
     public class SpecialChangedEventArgs : EventArgs
     {
         public DrawableCard Match { get; set; }
+        public IHanafudaPlayer Owner { get; set; }
     }
 
     public class SpecialEmptyEventArgs : EventArgs

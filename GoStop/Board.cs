@@ -12,21 +12,21 @@ namespace GoStop
 {
     public class Board : IBoard
     {
-        private int playingCount;
+        public int PlayingCount { get; protected set; }
         //cards
-        protected Dictionary<Month, CardCollection> field;
-        protected Dictionary<IHanafudaPlayer, CollectedCards> collected;
-        //players
-        protected IHanafudaPlayer currentPlayer;
+        private IHanafudaPlayer currentPlayer;
         protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
+
+        protected Dictionary<IHanafudaPlayer, int> scoreBoard;
+        protected Dictionary<IHanafudaPlayer, int> specialPoints;
 
         protected BoardManager _manager;
 
         public IHanafudaPlayer CurrentPlayer
         {
             get => currentPlayer;
-            private set
+            protected set
             {
                 if (currentPlayer == value)
                     return;
@@ -35,36 +35,18 @@ namespace GoStop
                     OnNewPlayerTurn();
             }
         }
-        // Adjusted in subscribe and unsubscribe
-        public int PlayingCount
-        {
-            get => playingCount;
-            set
-            {
-                if (playingCount == value)
-                    return;
-                playingCount = value;
-                if (playingCount == 0)
-                    OnAllPlayerRemoved();
-            }
-        }
-
+        
         public Board(BoardManager manager)
         {
-            field = new Dictionary<Month, CardCollection>();
-            InitializeField();
-            collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
+            currentPlayer = null;
             playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
-            _manager = manager;
-        }
 
-        private void InitializeField()
-        {
-            for (int i = 0; i < 12; i++)
-            {
-                field.Add((Month)i, new CardCollection());
-            }
+            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
+            specialPoints = new Dictionary<IHanafudaPlayer, int>();
+
+            _manager = manager;
+            _manager.HandEmpty += manager_HandEmpty;
         }
 
         #region Prepare Game
@@ -107,25 +89,29 @@ namespace GoStop
 
         public virtual void ResetBoard()
         {
-            DeckCollection.Instance.GatherCards();
-            field.Clear();
-            collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
         }
 
-        public virtual void CalculatePoint(Hanafuda card)
+        public void AddSpecialPoint(IHanafudaPlayer player, int point)
+        {
+            specialPoints[player] += point;
+        }
+        public virtual void CalculatePoint(IHanafudaPlayer owner, Hanafuda card)
         { }
 
-        public virtual void CalculatePoint(List<Hanafuda> cards)
+        public virtual void CalculatePoint(IHanafudaPlayer owner, List<Hanafuda> cards)
         {
 
         }
 
         public virtual void EndTurn()
         {
-            orderedPlayers.Enqueue(CurrentPlayer);
+            if (CurrentPlayer != null)
+                orderedPlayers.Enqueue(CurrentPlayer);
             CurrentPlayer = orderedPlayers.Dequeue();
+            if (PlayingCount <= 0)
+                ResetBoard();
         }
-        protected virtual void CheckGameEnd()
+        protected virtual void PostGame()
         {
 
         }
@@ -219,7 +205,8 @@ namespace GoStop
             //add to queue
             orderedPlayers.Enqueue(player);
             //add scoreBoard
-            collected.Add(player, new CollectedCards());
+            scoreBoard.Add(player, 0);
+            specialPoints.Add(player, 0);
             PlayingCount++;
         }
 
@@ -245,7 +232,6 @@ namespace GoStop
                 }
                 orderedPlayers = q;
             }
-            collected.Remove(player);
             //event
             var p = (Player)player;
             playerWaitList.Add(player);
@@ -254,20 +240,15 @@ namespace GoStop
 
         #endregion
         
-        protected virtual void player_HandEmpty(object sender, EventArgs args)
+        protected virtual void manager_HandEmpty()
         { }
 
-        /// <summary>
-        /// Not called on Clear()
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="arg"></param>
-        protected virtual void collection_SpecialEmpty(object sender, EventArgs arg)
+        protected virtual void special_CollectionEmpty(object sender, EventArgs args)
         { }
-        
 
         #region Manager EventHandler
 
+        
         public event Action NewPlayerTurn;
         public event Action AllPlayerRemoved;
 

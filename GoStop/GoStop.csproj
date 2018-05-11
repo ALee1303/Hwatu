@@ -61,9 +61,10 @@
     <Compile Include="Card\ChungDan.cs" />
     <Compile Include="IBoard.cs" />
     <Compile Include="Collection\FieldCollection.cs" />
-    <Compile Include="Player\IMainPlayer.cs" />
+    <Compile Include="Players\CPU.cs" />
+    <Compile Include="Players\IMainPlayer.cs" />
     <Compile Include="MonoGameComponents\Drawables\SpriteImage\OutlineImage.cs" />
-    <Compile Include="Player\MainPlayer.cs" />
+    <Compile Include="Players\MainPlayer.cs" />
     <Compile Include="MonoGameComponents\BoardManager.cs" />
     <Compile Include="MonoGameComponents\CardFactory.cs" />
     <Compile Include="MonoGameComponents\Drawables\DrawableCard.cs" />
@@ -85,11 +86,11 @@
     <Compile Include="Card\HongDan.cs" />
     <Compile Include="Card\Kwang.cs" />
     <Compile Include="Card\Pi.cs" />
-    <Compile Include="Player\IHanafudaPlayer.cs" />
+    <Compile Include="Players\IHanafudaPlayer.cs" />
     <Compile Include="Minhwatu\MinhwatuBoard.cs" />
     <Compile Include="MonoGameComponents\Drawables\SpriteImage\BackImage.cs" />
     <Compile Include="MonoGameComponents\HanafudaController.cs" />
-    <Compile Include="Player\Player.cs" />
+    <Compile Include="Players\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collection\CardCollection.cs" />

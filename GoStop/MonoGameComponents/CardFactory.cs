@@ -33,6 +33,7 @@ namespace GoStop.MonoGameComponents
         public DrawableCard ReturnTurnedDrawable(Hanafuda card)
         {
             Sprite2D back = GetBackImage();
+            back.Initialize();
             return new DrawableCard(Game, card, back);
         }
         public Sprite2D RetrieveOutline()

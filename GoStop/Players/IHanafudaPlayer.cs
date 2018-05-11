@@ -10,7 +10,6 @@ namespace GoStop
 {
     public interface IHanafudaPlayer
     {
-        void PlayCard(DrawableCard card);
         void PlayCard(List<DrawableCard> hand);
         Task<DrawableCard> ChooseCard(List<DrawableCard> choice);
         void JoinBoard(BoardManager manager);
