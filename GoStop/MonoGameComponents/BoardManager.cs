@@ -21,12 +21,11 @@ namespace GoStop.MonoGameComponents
         private IMainPlayer _mainPlayer;
 
         private CardFactory cardFactory;
-        private List<DrawableCard> enlargedCards;
         private Dictionary<Month, List<DrawableCard>> fieldCards;
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> handCards;
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> collectedCards;
         private Dictionary<IHanafudaPlayer, List<SpecialCards>> specialCollected;
-        
+
 
         protected Dictionary<IHanafudaPlayer, int> scoreBoard;
 
@@ -35,12 +34,11 @@ namespace GoStop.MonoGameComponents
         public HanafudaController Controller { get => _mainPlayer.Controller; }
 
         private Sprite2D loadedOutline;
-        
+
         public BoardManager(Game game) : base(game)
         {
             Game.Services.AddService<BoardManager>(this);
             cardFactory = new CardFactory(Game);
-            enlargedCards = new List<DrawableCard>();
             fieldCards = new Dictionary<Month, List<DrawableCard>>();
             SetupField();
             handCards = new Dictionary<IHanafudaPlayer, List<DrawableCard>>();
@@ -67,7 +65,7 @@ namespace GoStop.MonoGameComponents
             SubscribeToLoadedBoard();
             if (_board.IsNewPlayer(MainPlayer))
                 AddPlayerToBoard(MainPlayer);
-            MinhwatuPlayer cpu = new MinhwatuPlayer();
+            Player cpu = new Player();
             AddPlayerToBoard(cpu);
             _board.StartGame();
         }
@@ -106,7 +104,6 @@ namespace GoStop.MonoGameComponents
             scoreBoard.Add(player, 0);
 
             ((Player)player).CardPlayed += player_CardPlayed;
-            ((Player)player).CardChoose += player_CardChoose;
             ((Player)player).MouseOverCard += player_MouseOverCard;
         }
 
@@ -120,64 +117,6 @@ namespace GoStop.MonoGameComponents
         }
 
 
-        #region Card Played
-
-        private async Task PlayResult(DrawableCard played, float delay = 1.0f)
-        {
-            await Task.Delay(TimeSpan.FromSeconds(delay));
-            Month month = played.Card.Month;
-            RemoveCardFromHand(CurrentPlayer, played);
-            PlaceCardOnField(played);
-            int stack = fieldCards[month].Count;
-            if (stack == 3)
-            {
-                //put played card to collection
-                RemoveCardFromField(played);
-                PlaceCardOnCollection(CurrentPlayer, played);
-                List<DrawableCard> choices = fieldCards[month];
-                for (int i = 0; i < 2; i++)
-                    choices[i].Position = GetChoiceLocation(i);
-                CurrentPlayer.ChooseCard(choices);
-            }
-            else
-            {
-                if (stack == 2 || stack == 4)
-                {
-                    foreach (DrawableCard drawable in fieldCards[month])
-                    {
-                        RemoveCardFromField(drawable);
-                        PlaceCardOnCollection(CurrentPlayer, drawable);
-                    };
-                }
-                else // no match
-                    PlaceCardOnField(played);
-                PlayFromDeck();
-            }
-        }
-        private void PlayFromDeck()
-        {
-            IEnumerable<Hanafuda> drawnCard = DeckCollection.Instance.DrawCard();
-            IEnumerable<DrawableCard> drawable = InitializeRevealedDrawables(drawnCard);
-            DrawableCard drawn = drawable.First();
-            PlayFromDeckResult(drawn.Card.Month, drawn);
-        }
-
-        private void PlayFromDeckResult(Month month, DrawableCard played, float delay = 1.0f)
-        {
-            int stack = fieldCards[month].Count;
-            PlaceCardOnField(played);
-            if (stack == 2 || stack == 4)
-            {
-                RemoveCardFromField(played);
-                PlaceCardOnCollection(CurrentPlayer, played);
-                foreach (DrawableCard drawable in fieldCards[month])
-                {
-                    RemoveCardFromField(drawable);
-                    PlaceCardOnCollection(CurrentPlayer, drawable);
-                }
-            }
-            _board.EndTurn();
-        }
 
 
         #region GameComponent
@@ -199,7 +138,6 @@ namespace GoStop.MonoGameComponents
             DrawField();
             if (loadedOutline != null)
                 loadedOutline.Draw();
-            DrawEnlarged();
         }
 
         private void DrawHands()
@@ -218,11 +156,6 @@ namespace GoStop.MonoGameComponents
         {
             fieldCards.Keys.ToList().ForEach(key => fieldCards[key].ForEach(
                 card => card.Draw()));
-        }
-        private void DrawEnlarged()
-        {
-            enlargedCards.ForEach(
-                card => card.Draw());
         }
 
         #endregion
@@ -310,7 +243,7 @@ namespace GoStop.MonoGameComponents
 
         protected virtual void board_AllPlayerRemoved()
         {
-            // TODO: Displaying result and ending game, replay button
+            
         }
 
         #endregion
@@ -344,24 +277,104 @@ namespace GoStop.MonoGameComponents
             if (played == null || player == null)
                 new ArgumentException("Wrong call to player_CardPlayed");
             RemoveCardFromHand(player, played);
-            PlayResult(played);
+            Month idx = played.Card.Month;
+            
+            
+            PlayResult(played).Start();
+        }
+        #endregion
+
+
+        #region Card Played
+
+        private async Task PlayResult(DrawableCard played, float delay = 1.0f)
+        {
+            Month playedMonth = played.Card.Month;            
+            RemoveCardFromHand(CurrentPlayer, played);
+            PlaceCardOnField(played);
+            // place card on field from deck
+            DrawableCard drawnCard = await PlayFromDeck();
+            Month drawnMonth = drawnCard.Card.Month;
+            // and check if player has pooped
+            if (drawnMonth == playedMonth)
+                return;
+            int stack = fieldCards[playedMonth].Count;
+            //didnt poop but month had 2 on field from beginning
+            if (stack == 3)
+            {
+                //put played card to collection
+                RemoveCardFromField(played);
+                PlaceCardOnCollection(CurrentPlayer, played);
+                List<DrawableCard> choices = fieldCards[playedMonth];
+                PlaceCardOnChoice(choices);
+                Task<DrawableCard> selectTask = CurrentPlayer.ChooseCard(choices);
+                DrawableCard selected = await selectTask;
+                //selected card to collection
+                RemoveCardFromField(selected);
+                PlaceCardOnCollection(CurrentPlayer, selected);
+                //put unselected card back on field
+                DrawableCard unselected = choices.Find(x => x != selected);
+                PlaceCardOnField(unselected);
+            }
+            // TODO: make to function
+            if (stack == 2 || stack == 4)
+            {
+                foreach (DrawableCard drawable in fieldCards[playedMonth])
+                {
+                    RemoveCardFromField(drawable);
+                    PlaceCardOnCollection(CurrentPlayer, drawable);
+                }
+            }
+            stack = fieldCards[drawnMonth].Count;
+            if (stack == 3)
+            {
+                //put played card to collection
+                RemoveCardFromField(played);
+                PlaceCardOnCollection(CurrentPlayer, played);
+                List<DrawableCard> choices = fieldCards[drawnMonth];
+                PlaceCardOnChoice(choices);
+                Task<DrawableCard> selectTask = CurrentPlayer.ChooseCard(choices);
+                DrawableCard selected = await selectTask;
+                //selected card to collection
+                RemoveCardFromField(selected);
+                PlaceCardOnCollection(CurrentPlayer, selected);
+                //put unselected card back on field
+                DrawableCard unselected = choices.Find(x => x != selected);
+                PlaceCardOnField(unselected);
+            }
+            if (stack == 2 || stack == 4)
+            {
+                foreach (DrawableCard drawable in fieldCards[drawnMonth])
+                {
+                    RemoveCardFromField(drawable);
+                    PlaceCardOnCollection(CurrentPlayer, drawable);
+                }
+            }
+            if (handCards[CurrentPlayer].Count == 0)
+                _board.PlayingCount--;
+            _board.EndTurn();
         }
 
-        protected virtual void player_CardChoose(object sender, PlayerEventArgs args)
+        private async Task<DrawableCard> PlayFromDeck(float delay = 2.0f)
         {
-            // check if Drawable is valid
-            var player = (IHanafudaPlayer)sender;
-            var selected = args.Selected;
-            var unselected = args.Unselected;
-            if (selected == null || unselected == null || player == null)
-                new ArgumentException("Wrong call to player_CardChoose");
-            enlargedCards.Clear();
-            //selected card to collection
-            RemoveCardFromField(selected);
-            PlaceCardOnCollection(player, selected);
-            //put unselected card back on field
-            PlaceCardOnField(unselected);
-            PlayFromDeck();
+            await Task.Delay(TimeSpan.FromSeconds(delay));
+            IEnumerable<Hanafuda> drawnCard = DeckCollection.Instance.DrawCard();
+            IEnumerable<DrawableCard> drawable = InitializeRevealedDrawables(drawnCard);
+            DrawableCard drawn = drawable.First();
+            fieldCards[drawn.Card.Month].Add(drawn);
+            drawn.Position = new Vector2(GraphicsDevice.Viewport.Width / 2 + 100, GraphicsDevice.Viewport.Height / 2);
+            await Task.Delay(TimeSpan.FromSeconds(delay));
+            PlaceCardOnField(drawn);
+            await Task.Delay(TimeSpan.FromSeconds(delay));
+            return drawn;
+        }
+        
+        private void CollectCard(IHanafudaPlayer owner, DrawableCard wonCard)
+        {            
+            foreach (SpecialCards collection in specialCollected[owner])
+                //must preserve drawable reference for later
+                collection.OnCardCollected(wonCard);
+            _board.CalculatePoint(wonCard.Card);
         }
         #endregion
 
@@ -372,8 +385,6 @@ namespace GoStop.MonoGameComponents
             handCards[owner].Add(drawable);
             drawable.Position = GetHandLocation(owner);
         }
-
-        /// Hardcoded for test screen
         private Vector2 GetHandLocation(IHanafudaPlayer owner)
         {
             int slot = handCards[owner].Count - 1;
@@ -389,9 +400,8 @@ namespace GoStop.MonoGameComponents
             Month month = drawable.Card.Month;
             fieldCards[month].Add(drawable);
             drawable.Position = GetFieldLocation(month);
-            
-        }
 
+        }
         private Vector2 GetFieldLocation(Month month)
         {
             int slot = (int)month;
@@ -403,13 +413,21 @@ namespace GoStop.MonoGameComponents
             return position;
         }
 
-        private void PlaceCardOnCollection(IHanafudaPlayer owner, DrawableCard drawable)
-        {
-            collectedCards[owner].Add(drawable);
-            CollectCard(owner, drawable);
-        }
 
-        private void DisplayWonSpecial(DrawableCard card, Type special)
+        private void PlaceCardOnChoice(List<DrawableCard> choices)
+        {
+            for (int i = 0; i < 2; i++)
+                choices[i].Position = GetChoiceLocation(i);
+        }
+        private Vector2 GetChoiceLocation(int count)
+        {
+            float x = Game.GraphicsDevice.Viewport.Width / 2 - 60;
+            float y = Game.GraphicsDevice.Viewport.Height / 2;
+            x += 120 * count;
+            return new Vector2(x, y);
+        }
+        
+        private void PlaceWonSpecial(DrawableCard card, Type special)
         {
         }
         private Vector2 GetSpecialLocation(Type special)
@@ -417,12 +435,10 @@ namespace GoStop.MonoGameComponents
             return Vector2.One;
         }
 
-        private Vector2 GetChoiceLocation(int count)
+        private void PlaceCardOnCollection(IHanafudaPlayer owner, DrawableCard drawable)
         {
-            float x = Game.GraphicsDevice.Viewport.Width  / 2 - 60;
-            float y = Game.GraphicsDevice.Viewport.Height / 2;
-            x += 120 * count;
-            return new Vector2(x, y);
+            collectedCards[owner].Add(drawable);
+            CollectCard(owner, drawable);
         }
 
         private void RemoveCardFromHand(IHanafudaPlayer player, DrawableCard drawable)
@@ -447,23 +463,8 @@ namespace GoStop.MonoGameComponents
                 new ArgumentException("Not a Special Collection");
 
         }
-
-        //private void CollectCards(IHanafudaPlayer owner, List<DrawableCard> wonCards)
-        //{
-        //    foreach (SpecialCards collection in specialCollected[owner])
-        //        collection.OnCardsCollected(wonCards);
-        //    _board.CalculatePoint();
-        //}
-
-        private void CollectCard(IHanafudaPlayer owner, DrawableCard wonCard)
-        {
-            foreach (SpecialCards collection in specialCollected[owner])
-                collection.OnCardCollected(wonCard);
-            _board.CalculatePoint();
-        }
         
-
-        #endregion
+        
 
         #region Score
         public void UpdateScore(int score, IHanafudaPlayer player)

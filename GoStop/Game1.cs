@@ -30,7 +30,7 @@ namespace GoStop
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             boardManager = new BoardManager(this);
-            mainPlayer = new MainMinhwatuPlayer(Services);
+            mainPlayer = new MainPlayer(Services);
             mainPlayer.JoinBoard(boardManager);
             this.IsMouseVisible = true;
         }

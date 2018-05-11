@@ -39,7 +39,7 @@ namespace GoStop
         public int PlayingCount
         {
             get => playingCount;
-            private set
+            set
             {
                 if (playingCount == value)
                     return;
@@ -112,7 +112,7 @@ namespace GoStop
             collected = new Dictionary<IHanafudaPlayer, CollectedCards>();
         }
 
-        public virtual void CalculatePoint()
+        public virtual void CalculatePoint(Hanafuda card)
         { }
 
         public virtual void CalculatePoint(List<Hanafuda> cards)
