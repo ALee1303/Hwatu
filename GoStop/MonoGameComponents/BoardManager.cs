@@ -354,6 +354,7 @@ namespace GoStop.MonoGameComponents
                 _board.PlayingCount--;
             _board.EndTurn();
         }
+
         private async Task<DrawableCard> PlayFromDeck(float delay = 2.0f)
         {
             await Task.Delay(TimeSpan.FromSeconds(delay));
