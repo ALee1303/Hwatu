@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using GoStop.MonoGameComponents;
 using GoStop.MonoGameComponents.Drawables;
+using System.Threading.Tasks;
 
 namespace GoStop
 {
@@ -20,21 +21,14 @@ namespace GoStop
 
             OnCardPlayed(args);
         }
-        protected virtual void ChooseCard(DrawableCard selected, DrawableCard unselected)
-        {
-            PlayerEventArgs args = new PlayerEventArgs();
-            args.Selected = selected;
-            args.Unselected = unselected;
-            OnCardChoose(args);
-        }
-
         #region Interface Methods
 
         public virtual void PlayCard(List<DrawableCard> hand)
         { }
 
-        public virtual void ChooseCard(List<DrawableCard> choice)
+        public virtual Task<DrawableCard> ChooseCard (List<DrawableCard> choice)
         {
+            return null;
         }
         public void JoinBoard(BoardManager manager)
         {
@@ -51,7 +45,6 @@ namespace GoStop
         #region Event
 
         public event EventHandler<PlayerEventArgs> CardPlayed;
-        public event EventHandler<PlayerEventArgs> CardChoose;
         public event EventHandler<PlayerEventArgs> MouseOverCard;
 
         protected virtual void OnMouseOver(PlayerEventArgs args)
@@ -65,10 +58,6 @@ namespace GoStop
         protected virtual void OnCardPlayed(PlayerEventArgs args)
         {
             CardPlayed?.Invoke(this, args);
-        }
-        protected virtual void OnCardChoose(PlayerEventArgs args)
-        {
-            CardChoose?.Invoke(this, args);
         }
         #endregion
     }

@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 using GoStop.MonoGameComponents;
 using GoStop.MonoGameComponents.Drawables;
 
-namespace GoStop.Minhwatu
+namespace GoStop
 {
-    public class MainMinhwatuPlayer : MinhwatuPlayer, IMainPlayer
+    public class MainPlayer : Player, IMainPlayer
     {
         private HanafudaController controller;
         public HanafudaController Controller { get => controller; }
@@ -30,7 +30,7 @@ namespace GoStop.Minhwatu
             }
         }
         
-        public MainMinhwatuPlayer(GameServiceContainer services) : base()
+        public MainPlayer(GameServiceContainer services) : base()
         {
             controller = new HanafudaController(services);
             outlinedCard = null;
@@ -47,17 +47,11 @@ namespace GoStop.Minhwatu
             PlayCard(selected);
         }
 
-        public override void ChooseCard(List<DrawableCard> choices)
+        public override Task<DrawableCard> ChooseCard(List<DrawableCard> choices)
         {
-            Task chooseTask = new Task(() => ChooseCardTask(choices));
-            chooseTask.Start();
-        }
-
-        private void ChooseCardTask(List<DrawableCard> choices)
-        {
-            DrawableCard selected = SelectCardLoop(choices);
-            DrawableCard notSelected = choices.Find(x => x != selected);
-            ChooseCard(selected, notSelected);
+            var chooseTask = Task<DrawableCard>.Factory.StartNew(() => SelectCardLoop(choices));
+            chooseTask.Wait();
+            return chooseTask;
         }
 
         private DrawableCard SelectCardLoop(List<DrawableCard> cards)

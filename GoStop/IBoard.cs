@@ -8,12 +8,12 @@ namespace GoStop
     public interface IBoard
     {
         IHanafudaPlayer CurrentPlayer { get; }
-        int PlayingCount { get; }
+        int PlayingCount { get; set; }
 
         void StartGame();
         void EndGame();
         void ResetBoard();
-        void CalculatePoint();
+        void CalculatePoint(Hanafuda card);
         void CalculatePoint(List<Hanafuda> cards);
 
         void EndTurn();

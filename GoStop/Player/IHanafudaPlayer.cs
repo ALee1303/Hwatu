@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using GoStop.Card;
 using GoStop.MonoGameComponents;
@@ -11,7 +12,7 @@ namespace GoStop
     {
         void PlayCard(DrawableCard card);
         void PlayCard(List<DrawableCard> hand);
-        void ChooseCard(List<DrawableCard> choice);
+        Task<DrawableCard> ChooseCard(List<DrawableCard> choice);
         void JoinBoard(BoardManager manager);
         void ExitBoard(BoardManager manager);
     }
