@@ -149,7 +149,7 @@ namespace GoStop.MonoGameComponents
         }
         public void ResizeImages()
         {
-            spriteGallery.Keys.ToList().ForEach(key => spriteGallery[key].Scale = Vector2.Zero);
+            spriteGallery.Keys.ToList().ForEach(key => spriteGallery[key].Scale = Vector2.One);
         }
         #endregion
 
