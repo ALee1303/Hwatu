@@ -61,6 +61,7 @@
     <Compile Include="Card\ChungDan.cs" />
     <Compile Include="IBoard.cs" />
     <Compile Include="Collection\FieldCollection.cs" />
+    <Compile Include="MonoGameComponents\Drawables\ScoreBoard2p.cs" />
     <Compile Include="Players\CPU.cs" />
     <Compile Include="Players\IMainPlayer.cs" />
     <Compile Include="MonoGameComponents\Drawables\SpriteImage\OutlineImage.cs" />

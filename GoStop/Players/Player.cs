@@ -24,7 +24,13 @@ namespace GoStop
         #region Interface Methods
 
         public virtual void PlayCard(List<DrawableCard> hand)
-        { }
+        {
+            Task playerTask = new Task(() => PlayCardTask(hand));
+            playerTask.Start();
+        }
+        protected virtual void PlayCardTask(List<DrawableCard> hand)
+        {
+        }
 
         public virtual Task<DrawableCard> ChooseCard (List<DrawableCard> choice)
         {

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using GoStop.Card;
 using GoStop.MonoGameComponents.Drawables;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GoStop.Collection
 {

@@ -15,7 +15,7 @@ namespace GoStop
         void StartGame();
         void EndGame();
         void AddSpecialPoint(IHanafudaPlayer player, int point);
-        void CalculatePoint(IHanafudaPlayer owner, Hanafuda card);
+        int CalculatePoint(IHanafudaPlayer owner, Hanafuda card);
         void CalculatePoint(IHanafudaPlayer owner, List<Hanafuda> cards);
 
         void EndTurn();

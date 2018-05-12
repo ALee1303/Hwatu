@@ -20,5 +20,11 @@ namespace GoStop.MonoGameComponents.Drawables
             Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
             Alpha = 0.5f;
         }
+        public void Draw(Vector2 scale)
+        {
+            SpriteBatch.Draw(Texture, Position,
+                SourceRect, Color.White * Alpha, Rotation,
+                Origin, scale, SpriteEffects.None, 0.0f);
+        }
     }
 }

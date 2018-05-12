@@ -26,7 +26,7 @@ namespace GoStop.Minhwatu
         }
 
 
-        public override void CalculatePoint(IHanafudaPlayer owner, Hanafuda card)
+        public override int CalculatePoint(IHanafudaPlayer owner, Hanafuda card)
         {
             CardType type = card.Type;
             int calculatedPnt = 0;
@@ -36,9 +36,13 @@ namespace GoStop.Minhwatu
                 calculatedPnt = 10;
             if (type == CardType.Kwang)
                 calculatedPnt = 20;
-            scoreBoard[owner] += calculatedPnt;
+            return calculatedPnt;
         }
 
+        public override void ResetBoard()
+        {
+
+        }
 
         protected override void PostGame()
         {
@@ -58,8 +62,9 @@ namespace GoStop.Minhwatu
                 new ArgumentException("Not a Special Collection");
             IHanafudaPlayer owner = specialArg.Owner;
             int point = specialArg.Points;
-            scoreBoard[owner] += point;
             specialPoints[owner] += point;
+            //Temporary
+            _manager.UpdatePoint(point, owner);
         }
     }
 }

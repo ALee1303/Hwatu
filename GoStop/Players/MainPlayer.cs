@@ -41,7 +41,7 @@ namespace GoStop
             Task playerTask = new Task(() => PlayCardTask(hand));
             playerTask.Start();
         }
-        private void PlayCardTask(List<DrawableCard> hand)
+        protected override void PlayCardTask(List<DrawableCard> hand)
         {
             DrawableCard selected = SelectCardLoop(hand);
             PlayCard(selected);

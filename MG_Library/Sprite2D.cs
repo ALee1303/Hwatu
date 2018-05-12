@@ -10,7 +10,9 @@ namespace MG_Library
         public Texture2D Texture;
         public float Alpha, Rotation;
         public string Path;
+        //TODO: change Scale to float
         public Vector2 Position, Scale, Origin;
+        public Color Color;
         public Rectangle SourceRect { get => Texture.Bounds; }
         public Rectangle BoundingRect
         {
@@ -22,6 +24,7 @@ namespace MG_Library
         }
 
         private SpriteBatch _spriteBatch;
+        protected SpriteBatch SpriteBatch { get => _spriteBatch; }
 
         public Sprite2D(Game game, string path) : base(game)
         {
@@ -29,6 +32,7 @@ namespace MG_Library
             Position = Origin = Vector2.Zero;
             Scale = Vector2.One;
             Alpha = 1.0f;
+            Color = Color.White;
         }
 
         public override void Initialize()
@@ -77,7 +81,7 @@ namespace MG_Library
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Position,
-                SourceRect, Color.White * Alpha, Rotation,
+                SourceRect, Color * Alpha, Rotation,
                 Origin, Scale, SpriteEffects.None, 0.0f);
         }
     }

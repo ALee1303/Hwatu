@@ -589,3 +589,10 @@
 /processorParam:TextureFormat=Color
 /build:September/Yul.png
 
+#begin ScoreFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:ScoreFont.spritefont
+

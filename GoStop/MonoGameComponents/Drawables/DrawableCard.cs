@@ -17,6 +17,8 @@ namespace GoStop.MonoGameComponents.Drawables
         private Hanafuda _card;
         private Vector2 position, scale;
         private Sprite2D cardImage;
+        private Color color;
+        private OutlineImage specialIndicator;
         public Vector2 Position
         {
             get => position;
@@ -39,6 +41,27 @@ namespace GoStop.MonoGameComponents.Drawables
                 cardImage.Scale = value;
             }
         }
+        public Color Color
+        {
+            get => cardImage.Color;
+            set
+            {
+                if (cardImage.Color == value)
+                    return;
+                cardImage.Color = value;
+            }
+        }
+        public float Alpha
+        {
+            get => cardImage.Alpha;
+            set
+            {
+                if (cardImage.Alpha == value)
+                    return;
+                cardImage.Alpha = value;
+            }
+        }
+
         public Rectangle Bound { get => cardImage.BoundingRect; }
         public Hanafuda Card { get => _card; }
         public string Path { get => cardImage.Path; }
@@ -48,6 +71,7 @@ namespace GoStop.MonoGameComponents.Drawables
             _manager = Game.Services.GetService<BoardManager>();
             _card = card;
             cardImage = image;
+            specialIndicator = null;
         }
 
 
@@ -62,6 +86,16 @@ namespace GoStop.MonoGameComponents.Drawables
             Sprite2D oldImg = cardImage;
             cardImage = newImg;
             return oldImg;
+        }
+
+        // Temporary
+        // Called by event SpecialCards.CollectionChanged
+        public void OnSpecialCollected()
+        {
+            specialIndicator = new OutlineImage(Game);
+            specialIndicator.Initialize();
+            specialIndicator.Position = this.position;
+            specialIndicator.Scale = this.scale;
         }
 
         #region Drawable Override
@@ -81,6 +115,8 @@ namespace GoStop.MonoGameComponents.Drawables
         public virtual void Draw()
         {
             cardImage.Draw();
+            if (specialIndicator != null)
+                specialIndicator.Draw();
         }
     }
 }

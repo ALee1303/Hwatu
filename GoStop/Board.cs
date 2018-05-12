@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using System.Linq;
 
 using GoStop.Card;
 using GoStop.Collection;
@@ -17,8 +17,8 @@ namespace GoStop
         private IHanafudaPlayer currentPlayer;
         protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
-
-        protected Dictionary<IHanafudaPlayer, int> scoreBoard;
+        
+        //may not need
         protected Dictionary<IHanafudaPlayer, int> specialPoints;
 
         protected BoardManager _manager;
@@ -41,8 +41,7 @@ namespace GoStop
             currentPlayer = null;
             playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
-
-            scoreBoard = new Dictionary<IHanafudaPlayer, int>();
+            
             specialPoints = new Dictionary<IHanafudaPlayer, int>();
 
             _manager = manager;
@@ -76,7 +75,17 @@ namespace GoStop
             PrepareGame();
             CurrentPlayer = orderedPlayers.Dequeue();
         }
+        
 
+        public virtual void EndTurn()
+        {
+            if (PlayingCount <= 0)
+                OnAllPlayerRemoved();
+            if (CurrentPlayer != null)
+                orderedPlayers.Enqueue(CurrentPlayer);
+            CurrentPlayer = orderedPlayers.Dequeue();
+        }
+        //Caller: OnAllPlyaerRemoved()
         public virtual void EndGame()
         {
             //in case game ends early
@@ -84,34 +93,29 @@ namespace GoStop
             {
                 RemovePlayer(player);
             }
+            PostGame();
+        }
+        // Caller: EndGame
+        protected virtual void PostGame()
+        {
             ResetBoard();
         }
-
+        // Caller: PostGame()
         public virtual void ResetBoard()
         {
+            specialPoints.Keys.ToList().ForEach(player => specialPoints[player] = 0);
         }
 
         public void AddSpecialPoint(IHanafudaPlayer player, int point)
         {
             specialPoints[player] += point;
         }
-        public virtual void CalculatePoint(IHanafudaPlayer owner, Hanafuda card)
-        { }
+        public virtual int CalculatePoint(IHanafudaPlayer owner, Hanafuda card)
+        {
+            return -1;
+        }
 
         public virtual void CalculatePoint(IHanafudaPlayer owner, List<Hanafuda> cards)
-        {
-
-        }
-
-        public virtual void EndTurn()
-        {
-            if (CurrentPlayer != null)
-                orderedPlayers.Enqueue(CurrentPlayer);
-            CurrentPlayer = orderedPlayers.Dequeue();
-            if (PlayingCount <= 0)
-                ResetBoard();
-        }
-        protected virtual void PostGame()
         {
 
         }
@@ -204,9 +208,8 @@ namespace GoStop
                 new ArgumentException("Can't Join: Game in progress");
             //add to queue
             orderedPlayers.Enqueue(player);
-            //add scoreBoard
-            scoreBoard.Add(player, 0);
-            specialPoints.Add(player, 0);
+            if (!specialPoints.ContainsKey(player))
+                specialPoints.Add(player, 0);
             PlayingCount++;
         }
 
@@ -240,9 +243,8 @@ namespace GoStop
 
         #endregion
         
-        protected virtual void manager_HandEmpty()
-        { }
 
+        
         protected virtual void special_CollectionEmpty(object sender, EventArgs args)
         { }
 
@@ -255,7 +257,7 @@ namespace GoStop
         public event EventHandler<DealCardEventArgs> CardsDealt;
         public event EventHandler<DealCardEventArgs> CardsOnField;
         public event EventHandler<MultipleMatchEventArgs> MultipleMatch;
-
+        
         protected virtual void OnNewPlayerTurn()
         {
             NewPlayerTurn?.Invoke();
@@ -263,6 +265,7 @@ namespace GoStop
 
         protected virtual void OnAllPlayerRemoved()
         {
+            EndGame();
             AllPlayerRemoved?.Invoke();
         }
 
@@ -281,6 +284,8 @@ namespace GoStop
             MultipleMatch?.Invoke(this, args);
         }
 
+        protected virtual void manager_HandEmpty()
+        { }
 
         #endregion
 

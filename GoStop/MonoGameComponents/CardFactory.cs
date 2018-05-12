@@ -157,15 +157,16 @@ namespace GoStop.MonoGameComponents
         /// <param name="drawable"></param>
         /// <param name="newImg"></param>
         
-        public DrawableCard FlipCard(DrawableCard drawable)
+        public void FlipCard(DrawableCard drawable)
         {
             RetrieveBackImage(drawable);
-            return ReturnPairedDrawable(drawable.Card);
+            drawable.Initialize();
         }
         public void RetrieveBackImage(DrawableCard drawable)
         {
-            Sprite2D temp = drawable.RetrieveImage();
-            backImages.Enqueue(temp);
+            Sprite2D frontImg = RetrieveFromGallery(drawable.Card);
+            Sprite2D retrieved = drawable.RetrieveImage(frontImg);
+            backImages.Enqueue(retrieved);
         }
 
         private Sprite2D GetBackImage()

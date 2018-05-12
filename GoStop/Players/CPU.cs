@@ -24,11 +24,11 @@ namespace GoStop
             DrawableCard bestCandidate = null;
             for (int i = 0; i < maxSpanList.Count; i++)
             {
-                Month bestMonth = maxSpanList[i].Card.Month;
-                List<DrawableCard> bestSlot = _manager.Field[bestMonth];
-                if (bestSlot.Count < 0)
-                    continue;
                 bestCandidate = maxSpanList[i];
+                Month bestMonth = bestCandidate.Card.Month;
+                List<DrawableCard> bestSlot = _manager.Field[bestMonth];
+                if (bestSlot.Count == 0)
+                    continue;
                 break;
             }
             PlayCard(bestCandidate);
