@@ -282,6 +282,7 @@ namespace GoStop.MonoGameComponents
             fieldCards.Keys.ToList().ForEach(key => fieldCards[key].Clear());
             handCards.Keys.ToList().ForEach(key => handCards[key].Clear());
             collectedCards.Keys.ToList().ForEach(key => collectedCards[key].Clear());
+            cardFactory.ResizeImages();
         }
         #endregion
 

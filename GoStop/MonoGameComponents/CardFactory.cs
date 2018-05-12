@@ -147,6 +147,10 @@ namespace GoStop.MonoGameComponents
             }
             return type;
         }
+        public void ResizeImages()
+        {
+            spriteGallery.Keys.ToList().ForEach(key => spriteGallery[key].Scale = Vector2.Zero);
+        }
         #endregion
 
         #region BackImage Methods
