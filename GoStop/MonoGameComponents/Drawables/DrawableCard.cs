@@ -17,27 +17,24 @@ namespace GoStop.MonoGameComponents.Drawables
         private Hanafuda _card;
         private Vector2 position, scale;
         private Sprite2D cardImage;
-        private Color color;
         private OutlineImage specialIndicator;
         public Vector2 Position
         {
-            get => position;
+            get => cardImage.Position;
             set
             {
-                if (position == value)
+                if (cardImage.Position == value)
                     return;
-                position = value;
                 cardImage.Position = value;
             }
         }
         public Vector2 Scale
         {
-            get => scale;
+            get => cardImage.Scale;
             set
             {
-                if (scale == value)
+                if (cardImage.Scale == value)
                     return;
-                scale = value;
                 cardImage.Scale = value;
             }
         }
