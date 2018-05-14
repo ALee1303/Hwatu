@@ -557,7 +557,7 @@ namespace GoStop.MonoGameComponents
             int ySlot = collectedCards[owner].Count / 6;
             Vector2 loc = new Vector2(Game.GraphicsDevice.Viewport.Width - 24.0f * xSlot - 20.0f, 40.0f * ySlot + 40.0f);
             if (owner == MainPlayer)
-                loc.Y += GraphicsDevice.Viewport.Height - 70.0f - 120.0f * ySlot;
+                loc.Y += GraphicsDevice.Viewport.Height - 70.0f - 80.0f * ySlot;
             return loc;
         }
         private void CollectCard(IHanafudaPlayer owner, DrawableCard wonCard)
