@@ -456,7 +456,7 @@ namespace GoStop.MonoGameComponents
                     PlaceCardOnCollection(CurrentPlayer, toMove);
                 }
             }
-            await Task.Delay(TimeSpan.FromSeconds());
+            await Task.Delay(TimeSpan.FromSeconds(delay));
             //resize outline
             outlineScale = Vector2.One;
             if (handCards[CurrentPlayer].Count == 0)
@@ -577,13 +577,15 @@ namespace GoStop.MonoGameComponents
             scoreBoard[owner] += _board.CalculatePoint(owner, wonCard.Card);
         }
 
-        //private void PlaceWonSpecial(DrawableCard card, Type special)
-        //{
-        //}
-        //private Vector2 GetSpecialLocation(Type special)
-        //{
-        //    return Vector2.One;
-        //}
+        /* TODO: display logic for special cards.
+        private void PlaceWonSpecial(DrawableCard card, Type special)
+        {
+        }
+        private Vector2 GetSpecialLocation(Type special)
+        {
+            return Vector2.One;
+        }
+        */
 
         private void RemoveCardFromHand(IHanafudaPlayer player, DrawableCard drawable)
         {
