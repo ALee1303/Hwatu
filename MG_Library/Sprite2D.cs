@@ -12,6 +12,8 @@ namespace MG_Library
         public string Path;
         //TODO: change Scale to float
         public Vector2 Position, Scale, Origin;
+        public float Width { get; protected set; }
+        public float Height { get; protected set; }
         public Color Color;
         public Rectangle SourceRect { get => Texture.Bounds; }
         public Rectangle BoundingRect
@@ -47,7 +49,9 @@ namespace MG_Library
             if (Path == null)
                 return;
             Texture = Game.Content.Load<Texture2D>(Path);
-            Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+            Width = Texture.Width;
+            Height = Texture.Height;
+            Origin = new Vector2(Width / 2, Height / 2);
         }
 
         protected override void UnloadContent()

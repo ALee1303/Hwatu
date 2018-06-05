@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using GoStop.Card;
 using GoStop.Collection;
+using GoStop.MonoGameComponents.Drawables;
 
 namespace UnitTestGoStop
 {
@@ -23,10 +24,6 @@ namespace UnitTestGoStop
             int point = 0;
             var collection = new Object();
             special.CollectionEmpty += (s, e) => { collection = s; point = ((SpecialEmptyEventArgs)e).Points; };
-            //special.OnCardsCollected(
-            //    new List<Hanafuda> {
-            //        new SsangPi(Month.December), new ChoDan(Month.December),
-            //        new Yul(Month.December), new Kwang(Month.December) });
             Assert.AreEqual(20, point);
             Assert.IsInstanceOfType(collection, typeof(SpecialCards));
         }

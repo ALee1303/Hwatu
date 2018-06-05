@@ -9,12 +9,12 @@ namespace GoStop
 {
     public interface IBoard
     {
+        List<IHanafudaPlayer> PlayerWaitList { get; }
         IHanafudaPlayer CurrentPlayer { get; }
         int PlayingCount { get;}        
 
         void StartGame();
         void EndGame();
-        void AddSpecialPoint(IHanafudaPlayer player, int point);
         int CalculatePoint(IHanafudaPlayer owner, Hanafuda card);
         void CalculatePoint(IHanafudaPlayer owner, List<Hanafuda> cards);
 

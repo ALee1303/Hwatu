@@ -25,10 +25,14 @@ namespace GoStop.MonoGameComponents
         private Dictionary<Month, List<DrawableCard>> fieldCards;
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> handCards;
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> collectedCards;
+        //currently not implemented, for future visual effect
         private Dictionary<Type, List<DrawableCard>> specialCollected;
 
         private Dictionary<IHanafudaPlayer, List<SpecialCards>> specialStatus;
-        
+
+        protected Dictionary<IHanafudaPlayer, int> specialPoints;
+        public Dictionary<IHanafudaPlayer, int> SpecialPoints { get => specialPoints; }
+
         protected Dictionary<IHanafudaPlayer, int> scoreBoard;
         public Dictionary<IHanafudaPlayer, int> ScoreBoard { get => scoreBoard; }
 
@@ -61,8 +65,8 @@ namespace GoStop.MonoGameComponents
             handCards = new Dictionary<IHanafudaPlayer, List<DrawableCard>>();
             collectedCards = new Dictionary<IHanafudaPlayer, List<DrawableCard>>();
             specialCollected = new Dictionary<Type, List<DrawableCard>>();
-            SetupMinhwatuSpecialVisual();
             specialStatus = new Dictionary<IHanafudaPlayer, List<SpecialCards>>();
+            specialPoints = new Dictionary<IHanafudaPlayer, int>();
             scoreBoard = new Dictionary<IHanafudaPlayer, int>();
 
             outlineScale = Vector2.One;
@@ -117,8 +121,6 @@ namespace GoStop.MonoGameComponents
         public override void Draw(GameTime gameTime)
         {
             DrawHands();
-            // TODO: Location Logic for Collected
-            //DrawCollected();
             DrawField();
             if (loadedOutline != null)
                 ((OutlineImage)loadedOutline).Draw(outlineScale);
@@ -166,6 +168,7 @@ namespace GoStop.MonoGameComponents
 
         #endregion
 
+        // Temporary
         public void StartMinhwatuGameVsCPU()
         {
             if (_board != null)
@@ -193,6 +196,8 @@ namespace GoStop.MonoGameComponents
                 return;
             isPostGame = false;
             ResetLoadedBoard();
+            // TODO: Add logic for refreshing special collections
+            
             _board.StartGame();
         }
 
@@ -227,9 +232,13 @@ namespace GoStop.MonoGameComponents
             collectedCards.Add(player, new List<DrawableCard>());
             specialStatus.Add(player, _board.PrepareSpecialCollection(player));
             specialStatus[player].ForEach(
-                (collection) => ((CardCollection)collection).CollectionChanged += special_collectionChanged);
-
-            scoreBoard.Add(player, 0);
+                (collection) => ((CardCollection)collection).CollectionChanged += special_CollectionChanged);
+            specialStatus[player].ForEach(
+                (collection) => ((CardCollection)collection).CollectionEmpty += special_CollectionEmpty);
+            if (!specialPoints.ContainsKey(player))
+                specialPoints.Add(player, 0);
+            if (!scoreBoard.ContainsKey(player))
+                scoreBoard.Add(player, 0);
 
             ((Player)player).CardPlayed += player_CardPlayed;
             ((Player)player).MouseOverCard += player_MouseOverCard;
@@ -447,7 +456,7 @@ namespace GoStop.MonoGameComponents
                     PlaceCardOnCollection(CurrentPlayer, toMove);
                 }
             }
-            await Task.Delay(TimeSpan.FromSeconds(delay));
+            await Task.Delay(TimeSpan.FromSeconds());
             //resize outline
             outlineScale = Vector2.One;
             if (handCards[CurrentPlayer].Count == 0)
@@ -563,18 +572,18 @@ namespace GoStop.MonoGameComponents
         private void CollectCard(IHanafudaPlayer owner, DrawableCard wonCard)
         {
             foreach (SpecialCards collection in specialStatus[owner])
-                //must preserve drawable reference for later
                 collection.OnCardCollected(wonCard);
+            // get point according to the game mode in play
             scoreBoard[owner] += _board.CalculatePoint(owner, wonCard.Card);
         }
 
-        private void PlaceWonSpecial(DrawableCard card, Type special)
-        {
-        }
-        private Vector2 GetSpecialLocation(Type special)
-        {
-            return Vector2.One;
-        }
+        //private void PlaceWonSpecial(DrawableCard card, Type special)
+        //{
+        //}
+        //private Vector2 GetSpecialLocation(Type special)
+        //{
+        //    return Vector2.One;
+        //}
 
         private void RemoveCardFromHand(IHanafudaPlayer player, DrawableCard drawable)
         {
@@ -591,7 +600,7 @@ namespace GoStop.MonoGameComponents
         #endregion
 
 
-        protected virtual void special_collectionChanged(object sender, EventArgs args)
+        protected virtual void special_CollectionChanged(object sender, EventArgs args)
         {
             Type type = sender.GetType();
             SpecialChangedEventArgs specialArg = (SpecialChangedEventArgs)args;
@@ -599,10 +608,16 @@ namespace GoStop.MonoGameComponents
                 new ArgumentException("Not a Special Collection");
             specialArg.Match.OnSpecialCollected();
         }
-        //Temporary
-        public void UpdatePoint(int point, IHanafudaPlayer player)
+        protected virtual void special_CollectionEmpty(object sender, EventArgs args)
         {
-            scoreBoard[player] += point;
+            Type type = sender.GetType();
+            SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)args;
+            if (!(type.IsInstanceOfType(typeof(SpecialCards)) || specialArg == null))
+                new ArgumentException("Not a Special Collection");
+            IHanafudaPlayer owner = specialArg.Owner;
+            int point = specialArg.Points;
+            specialPoints[owner] += point;
+            scoreBoard[owner] += point;
         }
     }
 }

@@ -17,7 +17,9 @@ namespace GoStop.MonoGameComponents.Drawables
             Color[] data = new Color[50 * 81];
             for (int i = 0; i < data.Length; ++i) data[i] = Color.Yellow;
             Texture.SetData(data);
-            Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+            Width = Texture.Width;
+            Height = Texture.Height;
+            Origin = new Vector2(Width / 2, Height / 2);
             Alpha = 0.5f;
         }
         public void Draw(Vector2 scale)

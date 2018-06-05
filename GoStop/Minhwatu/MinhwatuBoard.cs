@@ -10,8 +10,7 @@ namespace GoStop.Minhwatu
     public class MinhwatuBoard : Board
     {
         public MinhwatuBoard(BoardManager manager) : base(manager)
-        {
-        }
+        { }
 
         public override List<SpecialCards> PrepareSpecialCollection(IHanafudaPlayer player)
         {
@@ -20,8 +19,6 @@ namespace GoStop.Minhwatu
                 new ChoYak(player), new PoongYak(player), new BiYak(player),
                 new ChoDanCollection(player), new ChungDanCollection(player), new HongDanCollection(player)
             };
-            foreach (SpecialCards special in specials)
-                special.CollectionEmpty += special_CollectionEmpty;
             return specials;
         }
 
@@ -52,19 +49,6 @@ namespace GoStop.Minhwatu
         protected override void manager_HandEmpty()
         {
             RemovePlayer(CurrentPlayer);
-        }
-
-        protected override void special_CollectionEmpty(object sender, EventArgs args)
-        {
-            Type type = sender.GetType();
-            SpecialEmptyEventArgs specialArg = (SpecialEmptyEventArgs)args;
-            if (!(type.IsInstanceOfType(typeof(SpecialCards)) || specialArg == null))
-                new ArgumentException("Not a Special Collection");
-            IHanafudaPlayer owner = specialArg.Owner;
-            int point = specialArg.Points;
-            specialPoints[owner] += point;
-            //Temporary
-            _manager.UpdatePoint(point, owner);
         }
     }
 }

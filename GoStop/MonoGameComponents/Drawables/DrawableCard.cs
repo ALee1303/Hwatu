@@ -15,7 +15,6 @@ namespace GoStop.MonoGameComponents.Drawables
     {
         private BoardManager _manager;
         private Hanafuda _card;
-        private Vector2 position, scale;
         private Sprite2D cardImage;
         private OutlineImage specialIndicator;
         public Vector2 Position
@@ -91,8 +90,8 @@ namespace GoStop.MonoGameComponents.Drawables
         {
             specialIndicator = new OutlineImage(Game);
             specialIndicator.Initialize();
-            specialIndicator.Position = this.position;
-            specialIndicator.Scale = this.scale;
+            specialIndicator.Position = this.Position;
+            specialIndicator.Scale = this.Scale;
         }
 
         #region Drawable Override

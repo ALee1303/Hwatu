@@ -18,10 +18,12 @@ namespace GoStop
         protected List<IHanafudaPlayer> playerWaitList;
         protected Queue<IHanafudaPlayer> orderedPlayers;
         
-        //may not need
-        protected Dictionary<IHanafudaPlayer, int> specialPoints;
-
         protected BoardManager _manager;
+
+        public List<IHanafudaPlayer> PlayerWaitList
+        {
+            get => playerWaitList;
+        }
 
         public IHanafudaPlayer CurrentPlayer
         {
@@ -41,8 +43,7 @@ namespace GoStop
             currentPlayer = null;
             playerWaitList = new List<IHanafudaPlayer>();
             orderedPlayers = new Queue<IHanafudaPlayer>();
-            
-            specialPoints = new Dictionary<IHanafudaPlayer, int>();
+           
 
             _manager = manager;
             _manager.HandEmpty += manager_HandEmpty;
@@ -50,7 +51,6 @@ namespace GoStop
 
         #region Prepare Game
 
-        // TODO:DealCard, GameResult
         protected virtual void PrepareGame()
         {
             OrderWaitingPlayers();
@@ -85,7 +85,8 @@ namespace GoStop
                 orderedPlayers.Enqueue(CurrentPlayer);
             CurrentPlayer = orderedPlayers.Dequeue();
         }
-        //Caller: OnAllPlyaerRemoved()
+
+        // Caller: OnAllPlyaerRemoved()
         public virtual void EndGame()
         {
             //in case game ends early
@@ -97,19 +98,11 @@ namespace GoStop
         }
         // Caller: EndGame
         protected virtual void PostGame()
-        {
-            ResetBoard();
-        }
-        // Caller: PostGame()
+        { }
+        
         public virtual void ResetBoard()
-        {
-            specialPoints.Keys.ToList().ForEach(player => specialPoints[player] = 0);
-        }
+        { }
 
-        public void AddSpecialPoint(IHanafudaPlayer player, int point)
-        {
-            specialPoints[player] += point;
-        }
         public virtual int CalculatePoint(IHanafudaPlayer owner, Hanafuda card)
         {
             return -1;
@@ -208,8 +201,6 @@ namespace GoStop
                 new ArgumentException("Can't Join: Game in progress");
             //add to queue
             orderedPlayers.Enqueue(player);
-            if (!specialPoints.ContainsKey(player))
-                specialPoints.Add(player, 0);
             PlayingCount++;
         }
 
@@ -242,11 +233,6 @@ namespace GoStop
         }
 
         #endregion
-        
-
-        
-        protected virtual void special_CollectionEmpty(object sender, EventArgs args)
-        { }
 
         #region Manager EventHandler
 
