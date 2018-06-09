@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using GoStop.Card;
-using GoStop.Collection;
-using GoStop;
-using GoStop.MonoGameComponents;
+using Hwatu.Card;
+using Hwatu.Collection;
+using Hwatu;
+using Hwatu.MonoGameComponents;
 
 namespace UnitTestGoStop
 {

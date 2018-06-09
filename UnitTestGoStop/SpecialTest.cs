@@ -3,9 +3,9 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using GoStop.Card;
-using GoStop.Collection;
-using GoStop.MonoGameComponents.Drawables;
+using Hwatu.Card;
+using Hwatu.Collection;
+using Hwatu.MonoGameComponents.Drawables;
 
 namespace UnitTestGoStop
 {

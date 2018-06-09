@@ -58,9 +58,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GoStop\GoStop.csproj">
+    <ProjectReference Include="..\Hwatu\Hwatu.csproj">
       <Project>{92232871-cfcd-47d9-a780-467d22b723e9}</Project>
-      <Name>GoStop</Name>
+      <Name>Hwatu</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

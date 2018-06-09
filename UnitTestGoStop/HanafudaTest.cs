@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GoStop;
-using GoStop.Card;
+using Hwatu;
+using Hwatu.Card;
 
 namespace UnitTestGoStop
 {

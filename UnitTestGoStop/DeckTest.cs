@@ -1,15 +1,13 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using GoStop.Collection;
-using GoStop.Card;
+using Hwatu.Collection;
 
 namespace UnitTestGoStop
 {
     [TestClass]
     public class DeckTest
     {
-        GoStop.Collection.CardCollection deck;
+        CardCollection deck;
 
         [TestMethod]
         public void DeckShuffleTest()
