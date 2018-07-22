@@ -56,17 +56,17 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Board.cs" />
+    <Compile Include="Board\Board.cs" />
+    <Compile Include="Board\BoardManager.cs" />
+    <Compile Include="Board\IBoard.cs" />
     <Compile Include="Card\ChoDan.cs" />
     <Compile Include="Card\ChungDan.cs" />
-    <Compile Include="IBoard.cs" />
-    <Compile Include="Collection\FieldCollection.cs" />
     <Compile Include="MonoGameComponents\Drawables\ScoreBoard2p.cs" />
+    <Compile Include="MonoGameComponents\Game1.cs" />
     <Compile Include="Players\CPU.cs" />
     <Compile Include="Players\IMainPlayer.cs" />
     <Compile Include="MonoGameComponents\Drawables\SpriteImage\OutlineImage.cs" />
     <Compile Include="Players\MainPlayer.cs" />
-    <Compile Include="MonoGameComponents\BoardManager.cs" />
     <Compile Include="MonoGameComponents\CardFactory.cs" />
     <Compile Include="MonoGameComponents\Drawables\DrawableCard.cs" />
     <Compile Include="Minhwatu\Collection\BiYak.cs" />
@@ -76,13 +76,11 @@
     <Compile Include="Minhwatu\Collection\abstract\DanCollection.cs" />
     <Compile Include="Collection\DeckCollection.cs" />
     <Compile Include="Minhwatu\Collection\HongDanCollection.cs" />
-    <Compile Include="Collection\CollectedCards.cs" />
     <Compile Include="Minhwatu\Collection\PoongYak.cs" />
     <Compile Include="Collection\SpecialCards.cs" />
     <Compile Include="Card\SsangPi.cs" />
     <Compile Include="Card\Yul.cs" />
     <Compile Include="Minhwatu\Collection\abstract\YakCollection.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="Card\abstract\Hanafuda.cs" />
     <Compile Include="Card\HongDan.cs" />
     <Compile Include="Card\Kwang.cs" />

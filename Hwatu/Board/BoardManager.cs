@@ -7,17 +7,39 @@ using Microsoft.Xna.Framework;
 using MG_Library;
 using Hwatu.Card;
 using Hwatu.Minhwatu;
+using Hwatu.MonoGameComponents;
 using Hwatu.MonoGameComponents.Drawables;
 using Hwatu.Collection;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Hwatu.MonoGameComponents
+namespace Hwatu
 {
     // TODO: Change to CardManager and move boardInitialization to board
     public class BoardManager : DrawableGameComponent
     {
+        // PLAYER TURN CONTROL
+
+        protected List<IHanafudaPlayer> waitList;
+        public List<IHanafudaPlayer> WaitList { get => waitList; }
+        protected Queue<IHanafudaPlayer> turnQueue;
+        public Queue<IHanafudaPlayer> TurnQueue { get => turnQueue; }
+
+        private IHanafudaPlayer currentPlayer;
+        public IHanafudaPlayer CurrentPlayer
+        {
+            get => currentPlayer;
+            set
+            {
+                if (currentPlayer == value)
+                    return;
+                currentPlayer = value;
+                if (currentPlayer != null)
+                    OnNewPlayerTurn();
+            }
+        }
+
         private IBoard _board;
-        private IMainPlayer _mainPlayer;
+        private MainPlayer mainPlayer;
 
         private CardFactory cardFactory;
         private Dictionary<Month, List<DrawableCard>> fieldCards;
@@ -25,6 +47,7 @@ namespace Hwatu.MonoGameComponents
         private Dictionary<IHanafudaPlayer, List<DrawableCard>> collectedCards;
         //currently not implemented, for future visual effect
         private Dictionary<Type, List<DrawableCard>> specialCollected;
+
 
         private Dictionary<IHanafudaPlayer, List<SpecialCards>> specialStatus;
 
@@ -46,9 +69,8 @@ namespace Hwatu.MonoGameComponents
         private Color resultColor;
         private float resultScale;
 
-        public IMainPlayer MainPlayer { get => _mainPlayer; }
-        public IHanafudaPlayer CurrentPlayer { get => _board.CurrentPlayer; }
-        public HanafudaController Controller { get => _mainPlayer.Controller; }
+        public MainPlayer MainPlayer { get => mainPlayer; }
+        public HanafudaController Controller { get => mainPlayer.Controller; }
         public Dictionary<Month, List<DrawableCard>> Field { get => fieldCards; }
 
         private Sprite2D loadedOutline;
@@ -57,6 +79,10 @@ namespace Hwatu.MonoGameComponents
         public BoardManager(Game game) : base(game)
         {
             Game.Services.AddService<BoardManager>(this);
+
+            waitList = new List<IHanafudaPlayer>();
+            turnQueue = new Queue<IHanafudaPlayer>();
+
             cardFactory = new CardFactory(Game);
             fieldCards = new Dictionary<Month, List<DrawableCard>>();
             SetupField();
@@ -133,7 +159,8 @@ namespace Hwatu.MonoGameComponents
 
         private void DrawHands()
         {
-            handCards.Keys.ToList().ForEach(key => {
+            handCards.Keys.ToList().ForEach(key =>
+            {
                 int idx = 0;
                 for (; idx < handCards[key].Count; idx++)
                 {
@@ -144,7 +171,8 @@ namespace Hwatu.MonoGameComponents
 
         private void DrawCollected()
         {
-            collectedCards.Keys.ToList().ForEach(key => {
+            collectedCards.Keys.ToList().ForEach(key =>
+            {
                 int idx = 0;
                 for (; idx < collectedCards[key].Count; idx++)
                 {
@@ -155,7 +183,8 @@ namespace Hwatu.MonoGameComponents
 
         private void DrawField()
         {
-            fieldCards.Keys.ToList().ForEach(key => {
+            fieldCards.Keys.ToList().ForEach(key =>
+            {
                 int idx = 0;
                 for (; idx < fieldCards[key].Count; idx++)
                 {
@@ -172,16 +201,34 @@ namespace Hwatu.MonoGameComponents
             if (_board != null)
                 new ArgumentException("Must Unsubscribe Board first");
             _board = new MinhwatuBoard(this);
-            SubscribeToLoadedBoard();
-            if (_board.IsNewPlayer(MainPlayer))
-                AddPlayerToBoard(MainPlayer);
             IHanafudaPlayer cpu = new CPU(this);
-            AddPlayerToBoard(cpu);
+            cpu.JoinBoard(this);
+            SetNewBoardForGame();
             scoreView = new ScoreBoard2p(this, Game);
             scoreView.Initialize();
-            _board.StartGame();
+            StartGame();
         }
-        
+
+        public virtual void StartGame()
+        {
+            _board.DealCard();
+            CurrentPlayer = turnQueue.Dequeue();
+        }
+
+        private void SetNewBoardForGame()
+        {
+            SubscribeToBoard();
+            OrderWaitingPlayers();
+        }
+
+        private void SubscribeToBoard()
+        {
+            Board board = (Board)_board;
+            board.CardsDealt += board_CardsDealt;
+            board.CardsOnField += board_CardsOnField;
+        }
+
+
         /// <summary>
         /// Start game on board that is ready
         /// TODO: multiple board start logic and case handling
@@ -195,8 +242,8 @@ namespace Hwatu.MonoGameComponents
             isPostGame = false;
             ResetLoadedBoard();
             // TODO: Add logic for refreshing special collections
-            
-            _board.StartGame();
+
+            StartGame();
         }
 
         /// <summary>
@@ -207,15 +254,16 @@ namespace Hwatu.MonoGameComponents
         {
             DiscardDrawables();
             DeckCollection.Instance.GatherCards();
-            _board.ResetBoard();
+            OrderWaitingPlayers();
         }
 
         public void OnJoinBoard(IHanafudaPlayer player)
         {
-            if (player is IMainPlayer)
-                _mainPlayer = (IMainPlayer)player;
-            if (_board != null)
-                AddPlayerToBoard(player);
+            if (waitList.Contains(player) || !IsNotPlaying(player))
+                return;
+            if (player is MainPlayer)
+                mainPlayer = (MainPlayer)player;
+            waitList.Add(player);
         }
 
         public void OnExitBoard(IHanafudaPlayer player)
@@ -223,9 +271,9 @@ namespace Hwatu.MonoGameComponents
             // TODO: for multiple players
         }
 
-        private void AddPlayerToBoard(IHanafudaPlayer player)
+        private void LoadPlayer(IHanafudaPlayer player)
         {
-            _board.SubscribePlayer(player);
+            turnQueue.Enqueue(player);
             handCards.Add(player, new List<DrawableCard>());
             collectedCards.Add(player, new List<DrawableCard>());
             specialStatus.Add(player, _board.PrepareSpecialCollection(player));
@@ -241,17 +289,51 @@ namespace Hwatu.MonoGameComponents
             ((Player)player).CardPlayed += player_CardPlayed;
             ((Player)player).MouseOverCard += player_MouseOverCard;
         }
-
-        private void SubscribeToLoadedBoard()
-        {
-            Board board = (Board)_board;
-            board.NewPlayerTurn += board_NewPlayerTurn;
-            board.AllPlayerRemoved += board_AllPlayerRemoved;
-            board.CardsDealt += board_CardsDealt;
-            board.CardsOnField += board_CardsOnField;
-        }
         
-  
+        protected virtual void OrderWaitingPlayers()
+        {
+            if (currentPlayer != null || turnQueue.Count > 0)
+                new ArgumentException("Game in progress");
+            foreach (IHanafudaPlayer player in waitList)
+                LoadPlayer(player);
+            waitList.Clear();
+        }
+
+        
+        /// <summary>
+        /// put player back on the waiting list
+        /// </summary>
+        /// <param name="player"></param>
+        protected virtual void RemovePlayerFromGame(IHanafudaPlayer player)
+        {
+            if (IsNotPlaying(player))
+                return; // if never subscribed
+            if (currentPlayer == player)
+                currentPlayer = null;
+            // if player is on the queue
+            else
+            {
+                Queue<IHanafudaPlayer> q = new Queue<IHanafudaPlayer>();
+                while (turnQueue.Count > 0)
+                {
+                    IHanafudaPlayer temp = turnQueue.Dequeue();
+                    if (temp == player)
+                        continue;
+                    q.Enqueue(temp);
+                }
+                turnQueue = q;
+            }
+            //event
+            var p = (Player)player;
+            waitList.Add(player);
+        }
+
+        public bool IsNotPlaying(IHanafudaPlayer player)
+        {
+            return currentPlayer != player
+                && !turnQueue.Contains(player);
+        }
+
 
         #region Setting up DrawableCards Methods
 
@@ -302,12 +384,12 @@ namespace Hwatu.MonoGameComponents
             HandEmpty?.Invoke();
         }
 
-        protected virtual void board_NewPlayerTurn()
+        protected virtual void OnNewPlayerTurn()
         {
             List<DrawableCard> hand = handCards[CurrentPlayer];
             CurrentPlayer.PlayCard(hand);
         }
-        
+
         protected virtual void board_CardsDealt(object sender, DealCardEventArgs args)
         {
             IEnumerable<Hanafuda> cards = args.Cards;
@@ -332,7 +414,7 @@ namespace Hwatu.MonoGameComponents
                 PlaceCardOnField(drawable);
             }
         }
-        
+
         // When _board.PlayingCount == 0
         protected virtual void board_AllPlayerRemoved()
         {
@@ -346,7 +428,7 @@ namespace Hwatu.MonoGameComponents
         protected virtual void player_MouseOverCard(object sender, PlayerEventArgs args)
         {
             //check for safe case to see if it was player triggering the event
-            var mainP = (IMainPlayer)sender;
+            var mainP = (MainPlayer)sender;
             if (mainP == null || mainP != MainPlayer)
                 return;
             var toOutline = args.Selected;
@@ -376,7 +458,7 @@ namespace Hwatu.MonoGameComponents
         #region Card Played
 
         private async Task PlayResult(DrawableCard played, float delay = 0.0f)
-        {      
+        {
             RemoveCardFromHand(CurrentPlayer, played);
             PlaceCardOnField(played);
             //scale outline
@@ -400,7 +482,7 @@ namespace Hwatu.MonoGameComponents
                 //shrink back to original size
                 foreach (DrawableCard enlarged in choices)
                     enlarged.Scale = Vector2.One;
-                
+
                 //selected card to collection
                 RemoveCardFromField(selected);
                 PlaceCardOnCollection(CurrentPlayer, selected);
@@ -414,7 +496,7 @@ namespace Hwatu.MonoGameComponents
             {
                 for (; stack > 0; stack--)
                 {
-                    DrawableCard toMove = fieldCards[playedMonth][stack-1];
+                    DrawableCard toMove = fieldCards[playedMonth][stack - 1];
                     RemoveCardFromField(toMove);
                     PlaceCardOnCollection(CurrentPlayer, toMove);
                 }
@@ -459,7 +541,7 @@ namespace Hwatu.MonoGameComponents
             outlineScale = Vector2.One;
             if (handCards[CurrentPlayer].Count == 0)
                 OnHandEmpty();
-            _board.EndTurn();
+            EndTurn();
         }
 
         private async Task<DrawableCard> PlayFromDeck(float delay = 1.0f)
@@ -480,9 +562,20 @@ namespace Hwatu.MonoGameComponents
             return drawn;
         }
 
-        #endregion
+        public virtual void EndTurn()
+        {
+            if (turnQueue.Count == 0)
+            {
+                PostGame();
+                return;
+            }
+            // currentPlayer is set to null when hand is empty
+            if (CurrentPlayer != null)
+                turnQueue.Enqueue(CurrentPlayer);
+            CurrentPlayer = turnQueue.Dequeue();
+        }
 
-        #region PostGame
+
         private void PostGame()
         {
             IHanafudaPlayer winner = scoreBoard.OrderByDescending(kevalue => kevalue.Value).First().Key;

@@ -7,7 +7,7 @@ using Hwatu.MonoGameComponents.Drawables;
 
 namespace Hwatu
 {
-    public class MainPlayer : Player, IMainPlayer
+    public class MainPlayer : Player
     {
         private HanafudaController controller;
         public HanafudaController Controller { get => controller; }
@@ -33,11 +33,6 @@ namespace Hwatu
             outlinedCard = null;
         }
         
-        public override void PlayCard(List<DrawableCard> hand)
-        {
-            Task playerTask = new Task(() => PlayCardTask(hand));
-            playerTask.Start();
-        }
         protected override void PlayCardTask(List<DrawableCard> hand)
         {
             DrawableCard selected = SelectCardLoop(hand);

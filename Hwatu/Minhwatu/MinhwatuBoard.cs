@@ -35,19 +35,10 @@ namespace Hwatu.Minhwatu
             return calculatedPnt;
         }
 
-        public override void ResetBoard()
-        {
-
-        }
-
-        protected override void PostGame()
-        {
-
-        }
-
         protected override void manager_HandEmpty()
         {
-            RemovePlayer(CurrentPlayer);
+            _manager.WaitList.Add(_manager.CurrentPlayer);
+            _manager.CurrentPlayer = null;
         }
     }
 }

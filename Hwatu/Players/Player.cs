@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Hwatu.MonoGameComponents;
 using Hwatu.MonoGameComponents.Drawables;
 using System.Threading.Tasks;
+using Hwatu.Card;
 
 namespace Hwatu
 {
@@ -11,7 +12,7 @@ namespace Hwatu
     {
         public Player()
         { }
-
+        
         protected virtual void PlayCard(DrawableCard card)
         {
             PlayerEventArgs args = new PlayerEventArgs();

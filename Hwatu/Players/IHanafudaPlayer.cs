@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Hwatu.Card;
 using Hwatu.MonoGameComponents;
 using Hwatu.MonoGameComponents.Drawables;
 
