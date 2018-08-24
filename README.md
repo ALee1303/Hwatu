@@ -5,7 +5,7 @@ Library for Traditional Korean Card Game using Monogame
 This project contains scripts and Visual Studio project for Asian traditional playing cards, Hwatu(Hanafuda). The data structure for Hwatu is created in C# POCO classes to extend portability. Other Game features are included in the project as MonoGame GameComponent. Lastly project also includes Unit Test used during the development.
 
 ## Hwatu Data Structure
-Hwatu(Hanafuda) is traditional Asian playing cards. Much similar to French playing cards. It has many varieties of games with varying rules. The provided Hwatu classes and ICollection data structure allows new game mode to be created in ease by creating separations of concerns between game rules and card classes.
+Hwatu(Hanafuda) is traditional Asian playing cards. Much similar to French playing cards. It has many varieties of games with varying rules. The provided Hwatu classes and ICollection data structure allows new game mode to be created in ease by creating separations of concerns between game rules and card classes. Check [Wiki](https://en.wikipedia.org/wiki/Hanafuda) for detalied info.
 * [Hanafuda](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Card)
 * [CardCollection](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Collection)
 
