@@ -18,6 +18,6 @@ Check [here](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Board) for deta
 Player classes interact with BoardManager to choose cards to play. Both NPC and MainPlayer are derived from Player classes so that interaction with BoardManager stays independent of which player takes turn.
 Check [here](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Players) for details.
 
-## Drawing the Board
+## Drawing the Card
 The project is using MonoGame to draw the gameplay. The DrawableCard class implements both Hanafuda and Sprite2D to visualize revealed cards. The BoardManager sorts these cards into dictionaries depending on their status and location, which also decides the draw order.
 Check [here](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/MonoGameComponents) for details.
