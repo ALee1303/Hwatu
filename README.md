@@ -12,12 +12,12 @@ Hwatu(Hanafuda) is traditional Asian playing cards. Much similar to French playi
 ## Board and Board Manager
 The Board class holds the general logic for each game type. It holds functions that varies depending on each game types such as dealing cards and calculating points. This way, developers can easily inherit and override the base Board class. This allows easier integration to other game mode.
 BoardManager class starts and manages the game by loading and interacting with a board of a specific game type. It also implements MonoGame Components to draw the progress of a board in play.
-Check [Documentation](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Board) for details.
+Check [here](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Board) for details.
 
 ## Player
 Player classes interact with BoardManager to choose cards to play. Both NPC and MainPlayer are derived from Player classes so that interaction with BoardManager stays independent of which player takes turn.
-Check [Documentation](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Players) for details.
+Check [here](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/Players) for details.
 
 ## Drawing the Board
 The project is using MonoGame to draw the gameplay. The DrawableCard class implements both Hanafuda and Sprite2D to visualize revealed cards. The BoardManager sorts these cards into dictionaries depending on their status and location, which also decides the draw order.
-Check [Documentation](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/MonoGameComponents) for details.
+Check [here](https://github.com/ALee1303/Hwatu/tree/master/Hwatu/MonoGameComponents) for details.
