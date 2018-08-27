@@ -35,7 +35,7 @@ namespace Hwatu
 
         }
 
-        public virtual List<SpecialCards> PrepareSpecialCollection(IHanafudaPlayer player)
+        public virtual List<SpecialCards> GetSpecialCollection(IHanafudaPlayer player)
         {
             return null;
         }

@@ -10,6 +10,13 @@ namespace Hwatu
 {
     public class Player : IHanafudaPlayer
     {
+        private bool _isInitialized;
+        public bool IsInitialized
+        {
+            get => _isInitialized;
+            set { _isInitialized = value; }
+        }
+
         public Player()
         { }
         

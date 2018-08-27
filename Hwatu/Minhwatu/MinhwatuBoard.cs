@@ -11,7 +11,7 @@ namespace Hwatu.Minhwatu
         public MinhwatuBoard(BoardManager manager) : base(manager)
         { }
 
-        public override List<SpecialCards> PrepareSpecialCollection(IHanafudaPlayer player)
+        public override List<SpecialCards> GetSpecialCollection(IHanafudaPlayer player)
         {
             List<SpecialCards> specials = new List<SpecialCards>
             {

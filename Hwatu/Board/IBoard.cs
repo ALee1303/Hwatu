@@ -9,7 +9,7 @@ namespace Hwatu
         int CalculatePoint(IHanafudaPlayer owner, Hanafuda card);
         void CalculatePoint(IHanafudaPlayer owner, List<Hanafuda> cards);
         
-        List<SpecialCards> PrepareSpecialCollection(IHanafudaPlayer player);
+        List<SpecialCards> GetSpecialCollection(IHanafudaPlayer player);
         void DealCard();
     }
 }

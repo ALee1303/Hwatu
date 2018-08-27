@@ -230,7 +230,7 @@ namespace Hwatu
 
 
         /// <summary>
-        /// Start game on board that is ready
+        /// Start game on board that is already instantiated
         /// TODO: multiple board start logic and case handling
         /// </summary>
         public void RestartLoadedBoard()
@@ -240,7 +240,7 @@ namespace Hwatu
             if (!isPostGame)
                 return;
             isPostGame = false;
-            ResetLoadedBoard();
+            ResetBoard();
             // TODO: Add logic for refreshing special collections
 
             StartGame();
@@ -250,7 +250,7 @@ namespace Hwatu
         /// Reorder deck for new game
         /// </summary>
         /// TODO: sort without creating new Drawable
-        private void ResetLoadedBoard()
+        private void ResetBoard()
         {
             DiscardDrawables();
             DeckCollection.Instance.GatherCards();
@@ -262,7 +262,10 @@ namespace Hwatu
             if (waitList.Contains(player) || !IsNotPlaying(player))
                 return;
             if (player is MainPlayer)
+            {
                 mainPlayer = (MainPlayer)player;
+                ((Player)player).MouseOverCard += player_MouseOverCard;
+            }
             waitList.Add(player);
         }
 
@@ -271,23 +274,34 @@ namespace Hwatu
             // TODO: for multiple players
         }
 
-        private void LoadPlayer(IHanafudaPlayer player)
-        {
-            turnQueue.Enqueue(player);
+        // Initialize player when first joining
+        private void InitializePlayer(IHanafudaPlayer player)
+        {  
             handCards.Add(player, new List<DrawableCard>());
             collectedCards.Add(player, new List<DrawableCard>());
-            specialStatus.Add(player, _board.PrepareSpecialCollection(player));
+            //Create special collection and subscribe player to the event.
+            specialStatus.Add(player, _board.GetSpecialCollection(player));
             specialStatus[player].ForEach(
                 (collection) => ((CardCollection)collection).CollectionChanged += special_CollectionChanged);
             specialStatus[player].ForEach(
                 (collection) => ((CardCollection)collection).CollectionEmpty += special_CollectionEmpty);
-            if (!specialPoints.ContainsKey(player))
-                specialPoints.Add(player, 0);
-            if (!scoreBoard.ContainsKey(player))
-                scoreBoard.Add(player, 0);
-
+            specialPoints.Add(player, 0);
+            scoreBoard.Add(player, 0);
             ((Player)player).CardPlayed += player_CardPlayed;
-            ((Player)player).MouseOverCard += player_MouseOverCard;
+            player.IsInitialized = true;
+        }
+         // called instead of InitializePlayer() for players already existing
+        private void ResetPlayer(IHanafudaPlayer player)
+        {
+            handCards[player] = new List<DrawableCard>();
+            //Create special collection and subscribe player to the event.
+            specialStatus[player] = _board.GetSpecialCollection(player);
+            specialStatus[player].ForEach(
+                (collection) => ((CardCollection)collection).CollectionChanged += special_CollectionChanged);
+            specialStatus[player].ForEach(
+                (collection) => ((CardCollection)collection).CollectionEmpty += special_CollectionEmpty);
+            SpecialPoints[player] = 0;
+            scoreBoard[player] = 0;
         }
         
         protected virtual void OrderWaitingPlayers()
@@ -295,7 +309,13 @@ namespace Hwatu
             if (currentPlayer != null || turnQueue.Count > 0)
                 new ArgumentException("Game in progress");
             foreach (IHanafudaPlayer player in waitList)
-                LoadPlayer(player);
+            {
+                if (!player.IsInitialized)
+                    InitializePlayer(player);
+                else
+                    ResetPlayer(player);
+                turnQueue.Enqueue(player);
+            }
             waitList.Clear();
         }
 
@@ -627,7 +647,6 @@ namespace Hwatu
                 yOffset + 200 * ySlot);
             return position;
         }
-
 
         private void PlaceCardOnChoice(List<DrawableCard> choices)
         {

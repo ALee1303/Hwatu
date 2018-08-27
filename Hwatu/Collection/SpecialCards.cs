@@ -16,6 +16,9 @@ namespace Hwatu.Collection
             this.owner = owner;
         }
 
+        public virtual void InitializeCollection()
+        { }
+
         public void OnCardsCollected(List<DrawableCard> wonCards)
         {
             foreach (DrawableCard card in wonCards)
